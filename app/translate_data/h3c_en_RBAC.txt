@@ -1,0 +1,362 @@
+Contents
+If the device runs in FIPS mode, the configuration of this feature has changed from non-FIPS mode, as described here.
+For more information about FIPS mode, see FIPS Configuration Guide.
+RBAC commands
+Use description to configure a description for a user role for an administrator to manage user roles.
+Use undo description to restore the default.
+Command
+Default
+No user role description is defined.
+View
+User role view
+Default user role
+Parameters
+text:Specifies a description, a case-sensitive string of 1 to 128 characters.
+Examples
+Configure the description as labVIP for user role role1.
+Related Commands
+Use display role to display user role information.
+Any view
+name role-name:Specifies a user role by its name, a case-sensitive string of 1 to 63 characters.
+If you do not specify a user role, this command displays information about all user roles, including the user role that exists by default.
+# Display information about user role 123.
+# Display information about all user roles.
+display role command display brief
+Use display role feature to display feature information.
+name feature-name:Shows detailed information about the features specified, and feature-name represents the feature name of the system, and all feature names are lower case letters.
+verbose:Displays detailed information about all features.
+Usage Guidance
+If you do not specify any keywords, a list of names for all features in the system displays.
+# Display the name list of all features on the system.
+(No. )
+# Display detailed information about all features.
+# Display detailed information about feature aaa.
+display role feature command display shows a description table (for example, the display field is display for display role feature name aaa).
+Use display role feature-group to display feature group information.
+name feature-group-name:Displays a list of feature names contained in the specified feature group.
+feature-group-name:Specifies a feature group by its name, a case-sensitive string of 1 to 31 characters.
+If you do not specify a feature group, this command displays information about all feature groups.
+verbose:Displays detailed information about feature groups.
+If you do not specify a feature group, this command displays the feature name list for the specified feature group.
+Feature group L2 and L3 are the two predefined feature groups for the system.
+# Display the list of feature names in all feature groups.
+# Display detailed information about all feature groups.
+# Display the feature name list for feature group L3.
+display role feature-group command display brief
+Use feature to add a feature to a feature group.
+Use undo feature to delete a feature in a feature group.
+A user-defined feature group does not contain any features.
+Feature group view
+feature-name:Specifies the feature name supported by the system, lower case letters for all feature names.
+You can use this command multiple times to add multiple features to a feature group.
+# Add a feature AAA and ACL to the feature group security-features.
+Use interface policy deny to enter interface policy view.
+Use undo interface policy deny to restore the default.
+Users have permission to operate any interface.
+User Role
+If you do not specify an interface list in interface policy view, the device does not have permission to operate any interfaces and to restrict or distinguish the user access to interface resources, you should also configure a list of interfaces that the user is allowed to operate through the permit interface command.
+If no permitted operation list is configured in interface policy view, all interfaces are not allowed.
+An interface is created, removed, and applied to an interface.
+Where you create and delete interfaces, only for logical interfaces.
+You can modify the policy of an interface for a user role, but the policy takes effect only when the user who is authorized to log in again.
+# Enter interface policy view and disable role role1 user.
+# Enter the interface policy view of user role role1 and add the user role role1 to the interface.
+Use permit interface to specify a permitted interface list.
+Use undo permit interface to disable a user from operating on the specified interface or all interfaces.
+An interface list in interface policy view does not have the right to operate any interfaces.
+Interface policy view
+interface interface-list:Specifies a space-separated list of up to 10 interface items, expressed as interface-list = { interface-type interface-number [ to interface-type interface-number ] } & <1-10>.
+The interface-type argument specifies the interface type and the interface-number argument represents the interface number.
+& <1 - 10> indicates that you can enter up to 10 occurrences of previous parameters.
+The starting interface type must be the same as the terminating interface number.
+After you enter interface policy view by using the interface policy deny command, you must configure a permitted interface list by this command.
+An interface creates and enters interface view, deletes, and applies interfaces.
+Where you create and delete interfaces, only for logical interfaces.
+You can add an interface that permits user operations to the interface list by executing this command multiple times.
+If you do not specify the interface-list keyword, the undo permit interface command disables all interfaces.
+The modified interface resource control policy does not take effect on online users who use the role to log in to the device.
+# Create a user role role1 and enter its view.
+# Configure user role rule 1 to allow access to interface and interface commands.
+# Configure user role rule 2 to allow the user to create a VLAN and enter related commands.
+Configure the user role role1 to operate only on interfaces and ~.
+After a user with the user role role1 logs in to a device, the operating interface and the ~, but cannot operate the other interfaces.
+The configuration results are verified as follows :
+Enter interface view.
+Assign GigabitEthernet 1/0/1 to VLAN 10.
+Cannot enter interface view.
+Use permit vlan to configure a list of allowed VLAN entries.
+Use undo permit vlan to disable the specified or all VLANs.
+No allowed VLAN list is configured in VLAN interface view.
+VLAN policy view
+vlan-id-list:Specifies a space-separated list of up to 10 possible VLAN entries, in the format of vlan-id-list = { vlan-id1 [ to vlan-id2 ] } & <1-10> vlan-id, in the range of 1 to 4094, & <1-10> arguments before the user.
+The terminating VLAN number must be higher than the starting VLAN number.
+After you enter VLAN policy view by using the vlan policy deny command, you must configure a permitted VLAN list by this command.
+The VLAN operation creates a VLAN and enters VLAN view, deletes, and applies a VLAN.
+You can add multiple VLANs to the VLAN list by executing this command multiple times.
+If you do not specify the vlan-id-list argument, the undo permit vlan command disables user access to all VLANs.
+The modified VLAN resource control policy does not take effect on online users who use the role to log in to the device.
+# Configure user role role1 to operate only VLANs 2, 4, and 50 through VLAN 100.
+After a user with user role role1 logs in to a device, you can operate VLANs 2, 4, and 50 through VLAN 100, but not on other VLANs.
+Create VLAN 100 and enter its view.
+Add access ports to VLAN 100.
+Cannot create VLAN 101 or enter its view.
+Use permit vpn-instance to specify a VPN instance for user access.
+Use undo permit vpn-instance to disable a user from operating in the specified VPN instance or all VPN instances.
+A VPN instance does not have the right to operate any VPN instance in VPN policy view.
+VPN policy view
+vpn-instance-name & <1-10>:Specifies the name of a VPN instance, a case-sensitive string of 1 to 31 characters.
+After you enter VPN policy view by using the vpn-instance policy deny command, you must specify a permitted list of VPN instances by using this command.
+In VPN instance view, you can create an MPLS L3VPN instance and enter its view, delete, and apply a VPN instance.
+You can add multiple VPN instances to the interface list by executing this command multiple times.
+If you do not specify the vpn-instance vpn-instance-name option, the undo permit vpn-instance command disables all VPN instances.
+The modified VPN resource control policy does not take effect on online users who use the role to log in to the device.
+Configure user role rule 1, and execute all commands and the commands in system view.
+# Configure user role role1 to operate only for VPN instance vpn1.
+After a user with user role role1 logs in to the device, VPN instance vpn1 can be operated, but other VPN instances cannot operate.
+Enter VPN instance view of vpn1.
+Specify IP address 10.110. .. 1.2 as the primary accounting server of RADIUS scheme radius1 and VPN instance vpn1.
+Cannot create a VPN instance named vpn2 or enter its view.
+Use role to create a user role and enter its view, or enter the view of an existing user role.
+If the specified user role already exists, enter user role view.
+Use undo role to delete a user role.
+A system-defined user role exists:network-admin, network-operator, level-n (an integer in the range of 0 to 15), security-audit.
+System view
+name role-name:Specifies a user role name, a case-sensitive string of 1 to 63 characters.
+You can create a maximum of 64 user roles in addition to the system-defined default user roles.
+The default user role cannot be deleted, and all permissions defined within the user role network-admin, network-operator, level-15, or security-audit cannot be modified ; the user role level-0 to level-14 can be used to adjust their permissions by using custom rules and resource control policies, but the system does not take effect for the display history-command all commands.
+Non-AAA authentication users cannot be assigned to the security log administrator role.
+# Create a user role role1 and enter user role view.
+Use role default-role enable to enable default user role authorization.
+Use undo role default-role enable to restore the default.
+By default, no AAA-authorized user role exists.
+role-name:Specifies the default user role name, a case-sensitive string of 1 to 63 characters.
+The device authorizes a user to access a remote authentication server or a local authentication server.
+If the user is not authorized with any user role, the user cannot successfully log in to the device.
+After you enable this feature, the device assigns a default user role to users who have not been authorized by the server.
+If a user is authenticated and is granted a specific user role, the user does not have the default user role.
+If you do not specify the role-name argument, the default user role is network-operator.
+# Enable the default user role feature.
+Use role feature-group to create a feature group and enter its view, or enter the view of an existing feature group.
+If the specified feature group already exists, enter feature group view.
+Use undo role feature-group to delete a feature group.
+Two feature groups exist with names L2 and L3, respectively.
+name feature-group-name:Specifies a feature group by its name, a case-sensitive string of 1 to 31 characters.
+Up to 64 feature groups can be created in the system, with the exception of system pre-defined feature group L2 and L3.
+System pre-defined feature group L2 and L3 cannot be modified and deleted.
+All Layer 2 protocol-related features are included in L2, and the commands in L3 contain all Layer 3 protocol-related functions.
+# Create a feature group named security-features, and enter feature group view.
+Use rule to create or edit a user role.
+Use undo rule to delete a user role.
+No rules are defined in the newly created user role, i.e., no rights exist for current user role.
+number:Specifies a privilege rule number in the range of 1 to 256.
+deny:Disables the execution of the specified command, XML element, or MIB node OID.
+permit:Permits the specified command, XML element, or MIB node OID.
+command command-string:Configures command-based rules.
+command—string indicates a string of 1 to 128 characters that is case sensitive, can be a specific command line, or an asterisk (*) wildcard character that contains spaces, Tab (which separates keywords, arguments, and any printable character).
+execute:Specifies the execution type command, the XML element, or the MIB node OID.
+Commands that are used to perform a specific program or function, such as ping commands.
+read:Specifies read-only commands, XML elements, or MIB node OID, to display system configuration and maintenance information.
+Read keys, such as the display, dir, more, and pwd commands.
+write:Specifies the write type command, the XML element, or MIB node OID, to configure the system.
+The command called the ssh server enable command is used.
+feature [ feature-name ]:Configures feature-based rules.
+feature-name refers to the system's predefined feature name, which is case sensitive.
+If you do not specify a feature name, this command displays information about all features.
+feature-group feature-group-name:Configures a feature group-based rule.
+A feature group-based rule takes effect only when the feature group is created.
+You can use the display role feature-group command to view the feature group information that has been created.
+oid oid-string:Specifies an Object Identifier (OID) rule.
+oid-string:Specifies an OID of the operation, a case-insensitive string of 1 to 255 characters.
+OIDs are comprised of a series of integers, with the location of nodes in the MI Tree, which uniquely identifies an object in a MIB library.
+For example:1.3.  # 6.1.  # 4.1. .... 25506.8. . 35.14. ., 19.1.  # 1.
+xml-element [ xml-string ]:Configures a rule based on XML elements.
+xml-string:Specifies the XPath of the XML element allowed operation, a case-insensitive string of 1 to 255 characters that separates the menu at'/'separators, such as Interfaces/Index/Name ; or if you do not specify the xml-string argument, it takes effect on all XML elements.
+all:Specifies all privilege rules.
+There are several types of rules that can be defined for a user role :
+Disables or permits specific command lines to be executed.
+Class of commands that permit or allow the execution of specified or all features.
+Class of commands that permit or allow all features of a feature group.
+Disables or allows the execution of all or specified MIB node OIDs.
+Disables or allows all XML elements or a certain class of XML elements to be executed.
+You can configure a maximum of 256 rules for a user role, and the total number of user role rules that can be configured on the system cannot exceed 1024.
+Access to the file system commands, which are controlled by both file system feature rules and specific command rules.
+To redirect output to a file, execute the command only after the user role is authorized to write files.
+When you define rules for a user role, follow these restrictions and guidelines :
+If the specified rule does not exist, the system creates a new rule.
+The modified rule does not take effect on online users, and users who use the role will log in to the device.
+In a user role, you can create multiple rules, each of which uniquely identifies a rule, whose commands are authorized for that role can be executed by those commands.
+If there is a conflict between these rules, the rule numbering level takes effect.
+For example, rule 1 allows you to execute command A.
+In a user role that has both system-defined rules (sys-x, integer, or self-defined rules) and user roles, the system-defined rule determines that the right content of the predefined rule exists.
+When entering the command signature string, the following rules apply :
+segment (segment)
+To describe the commands in multilevel view, you need to group the command signature string by using a semi-colon (;) to separate the string, each for one or a series of commands, and the commands in the last segment are commands under the view that executed commands in the previous segment.
+A segment can contain multiple asterisks (*), each asterisk (*) represents 0 or more arbitrary characters.
+For example, the command signature string " system ; interface * ; ip * ; " represents all commands that begin with ip after entering system view or entering any interface view.
+In addition to the last segment, the commands in the remaining segments should be a string of command characteristics that describes how to enter the subview.
+At least one printable character must appear in a field, and not all spaces or Tab.
+Use of semicolons
+When entering a command signature string, you must specify the view in which the command is located, and the set of command characteristics entering each view is separated by a semi-colon.
+However, for commands that can be executed in any view, such as the display command, or commands in user view, use the dir command without specifying the view of the rule in the match command string.
+When the last visible character in the last field is a semicolon, this indicates that the indicated command range is no longer extended or the commands will be extended to the subview.
+For example, the command signature string "system ; radius scheme * ;" represents all commands that begin with radius scheme in system view, the string "system ; radius scheme *" represents all commands that begin with radius scheme in system view, and enter all commands in subview (RADIUS scheme view).
+Asterisk use
+When an asterisk (*) appears at the first portion of a field, no other printable character can follow it, and that segment must be the last field of the command signature string.
+For example, the command signature string, "system ; *" represents all commands in system view and the commands in all subtasks view.
+When an asterisk (*) appears in the middle of a segment, it must be the last segment of the command signature string.
+For example, the command feature string debugging * event represents the event debugging commands for all modules in user view.
+Prefix Match
+The command keyword matches the command characteristic string as a prefix match algorithm, that is, the command line is matched against the rule whenever the first consecutive or all of the characters of the keyword in the command line match.
+Therefore, the complete or partial command keywords can be included in the command feature string.
+For example, if the rule "rule 1 deny command display arp source" is in effect, the display arp source-mac interface and display arp source-suppression commands are disabled.
+For command-based rules, the following usage considerations apply :
+The command-based rule applies only to commands in the specified view.
+When a user enters a command that does not exist in the current view but finds it in its parent view, the rule that controls the command in the current view does not control the access that it has in its parent view.
+For example, you define a rule named "rule 1 deny command system ; interface * ; *" disables the user from executing any commands in interface view.
+This command does not take effect when you enter the acl advanced 3000 command in interface view.
+The redirect character (" |, ">,>>>>>>), and the keyword in the display command line keyword does not match the specified key.
+For example, if the rule " rule 1 permit command display debugging " takes effect, the display debugging> log command is executed.
+However, if a redirect character is configured in a rule, RBAC will process it as regular characters.
+For example, if the rule " rule 1 permit command display debugging> log " takes effect, the display debugging> log command fails to match because the keyword> log is ignored by RBAC, and the display debugging command matches the rule.
+Therefore, do not use redirect rules when you configure rules.
+When you configure a match for an OID-based rule, the following rules apply :
+The rule that matches the OID that the user accesses takes effect.
+For example, the OID that the user accesses is 1.3. . 6.1. .... 4.1. .. 25506.141. # 3.0. . 1.  The role has "rule 1 permit read 1.3. ., rule 2 deny oid 1.3. " 6.  This field is named "read only 1.3. ." and "rule 3" are not read only 1.3.  – 6.1. ..  This rule can be used to match the value of the OID string.
+The rule numbering takes effect on an OID that has the same length.
+For example, the OID that the user accesses is 1.3. . 6.1.  # 4.1. .. 25506.141. # 3.0.  # 1, the role has "rule 1 permit read 1.3. ., rule 2 deny write 1.3.  # 6.1" and "rule 3 permit readd 1.3.  – 6.1 The write-write-write-only 1.3.  – 6.1 argument can be specified in the range, and the value of read-only 1.3.  – 6.1 argument can be used.
+# Create a user role role1 and execute the display acl command.
+Add a user role role1 and enter all commands that start with display.
+# Add a privilege rule to user role role1, and execute the radius scheme aaa command in system view, and enter all commands after entering child view.
+# Add a privilege rule to user role role1 to prevent the user from executing all commands with the reading type and the write type.
+# Add a privilege rule to user role role1 to disable all read types in aaa.
+# Add a privilege rule to user role role1 to allow the execution of the read type, write type, and the commands to execute on all features in the feature group security-features in features.
+# Add an OID-based rule to the user role role1 to allow read and write operations to MIB nodes with OID 1.1. .... 2.
+Use super to switch users from the current role to the specified user role.
+User View
+role-name:Specifies a user role name, a case-sensitive string of 1 to 63 characters that can be any user role that already exists in the system other than security-audit.
+If you do not specify this keyword, the command switches to the default user role.
+By default, the super default role command specifies the default user role.
+The changed user role takes effect only on the current login, and the user returns to the original role after logging in again.
+For correct operation security, you must enter the user role switch password when a user role switchover occurs.
+When switching to different user roles, enter the appropriate toggle password.
+If the server does not respond to or if no user role is specified for changing password, the switch fails and the backup authentication scheme.
+Therefore, before switching, be sure to configure the correct user role switch password.
+When switching user roles, follow these restrictions and guidelines :
+If the device does not change the user role for the AUX user, the device does not depend on whether to enter the switch password or not to enter the user role for the device.
+If the device does not change the user password when local scheme authentication is used, the device moves to remote AAA authentication for VTY users, and the device does not care if the user enters the switch password or enters the change password for the AUX user.
+# Change the user role to network-operator.
+(For example, use network-admin as the user, change the authentication mode to local, and switch the password to the current user. )
+authentication super (Security Command Reference/AAA)
+Use super authentication-mode to specify an authentication mode for user role authentication.
+Use undo super authentication-mode to restore the default.
+Use local authentication.
+local:Uses the locally configured user role to switch passwords.
+scheme:Uses the AAA configuration for authentication.
+To use local password authentication, you must specify a password for the user role on the device by using the super password command.
+For remote AAA authentication, you must configure a username and password for the user role on the RADIUS or HWTACACS server.
+You can use either local or scheme authentication or local or scheme.
+Local scheme—If a user does not change the password before using a user role on the device, users that log in to the VTY line are moved to remote AAA authentication.
+scheme local:Performs remote AAA authentication first, and the remote HWTACACS/RADIUS server does not respond to any response or the AAA remote authentication configuration on the device is invalid.
+When you associate scheme authentication with an AAA authentication scheme, see AAA configuration in Security Configuration Guide.
+# Configure the local authentication mode for the user role.
+# Set scheme local authentication to scheme.
+Use super default role to specify the default role for user role switchover.
+Use undo super default role to restore the default.
+The default user role is network-admin for role switchover.
+For a super command to switch user role, or to configure a password for user role switching, such as a role name that does not specify the destination switching mode, the default user role is used by the super default role command.
+Specify the network-operator as the default destination role for assigning users to a user role.
+Use super password to set the password for user role switchover.
+Use undo super password to delete the password for user role switchover.
+In non-FIPS mode :
+In FIPS mode :
+No user role switch password is set.
+role role-name:Specifies the name of the user role to switch, a case-sensitive string of 1 to 63 characters, to any user role that already exists in the system, except for security-audit.
+If you do not specify a user role name, this command enables the device to switch to the password for the default user role.
+hash:Sets the password in hash mode.
+simple:Specifies a password in plaintext form, which is stored in hashed form.
+string:Specifies a password string.
+In non-FIPS mode, the clear text password is a string of 1 to 63 characters and a hash password of 1 to 110 characters.
+In FIPS mode, the password is a string of 15 to 63 characters and the minimum mix type of password elements is 4 (must include numbers, upper case letters, lower case letters, and special characters).
+If you do not specify the hash or simple keyword, the super password [ role-name ] command sets the local user password in interactive mode.
+In FIPS mode, the user role can only be set with an interactive mode.
+To change the user role from local or local (local scheme or scheme local), you must use this command.
+Different user roles are recommended to have different switchover passwords for additional security permissions.
+# Configure the user role to switch to network-operator with plaintext password 123456TESTplan & !.
+# Configure the user role to use the plaintext password 123456TESTplan & !.
+Use super use-login-username to configure the username for users to use to log in to the username for authentication.
+Use undo super use-login-username to restore the default.
+The device prompts the user for authentication upon user role switchover.
+After you enable this feature for a remote AAA authentication scheme, the device automatically obtains the user name for user role Switch authentication, and the user uses the username as the mode to log in to the device.
+After you enable this feature, the device fails the user role switch authentication if the remote AAA authentication scheme is used, but the device does not log in to the device by using the username and password.
+This feature does not take effect if the device does not use remote AAA authentication for user role switchover authentication.
+# Configure the user role to use the login username for authentication.
+Use vlan policy deny to enter VLAN policy view.
+Use undo vlan policy deny to restore the default.
+The user has permission to operate any VLAN.
+After you enter VLAN policy view, if you do not specify an allowed VLAN list, the user does not have permission to operate any VLANs ; if you need to restrict or distinguish between user-access to VLAN resources, you should also configure the list of allowed users with the permit vlan command.
+If no allowed VLAN list is configured in VLAN policy view, the user is not allowed to operate all VLANs.
+Operation of a VLAN refers to creating and entering VLAN view, deleting, and applying a VLAN.
+You can modify the VLAN policy of a user role, but the modified policy takes effect only when the user who is authorized to log in again.
+# In user role role1, enter VLAN policy view and disable role role1 users to operate on any VLAN.
+In user role role1, enter VLAN policy view, and assign the role role1 user to operate on VLAN 50 to VLAN 100.
+Use vpn-instance policy deny to enter VPN policy view.
+Use undo vpn-instance policy deny to restore the default.
+The user has permission to operate any VPN instance.
+After you enter VPN policy view, if you do not specify a VPN instance list for the policy, the user does not have permission to operate on any VPN instance ; if you want to restrict or distinguish users from access to VPN resources, you should also configure the list of VPN instances by using the permit vpn-instance command.
+If you do not specify a VPN instance in VPN policy view, all VPN instances are not allowed.
+You can modify a policy for a user role, but the policy takes effect only when the user who is authorized to log in again.
+# Create a VPN policy and enter user role role1 and remove the role from any VPN instance.
+# Create a VPN policy and enter user role role1 to operate VPN instance vpn2.
+Field
+Description
+User role name, where the system-defined user role name is network-admin, network-operator, level-n (n 0 through 15), security-audit, guest-manager (unsupported).
+User role description.
+Configured VLAN policy :
+deny—A VLAN cannot be assigned to other VLANs except for the specified VLAN.
+permit (default)—Default VLAN policy, which enables the user role to access all VLANs.
+VLANs accessible to the user role.
+Interface policy of the user role :
+deny—An interface cannot be configured to operate other interfaces except the interfaces specified by using the permit operation command.
+permit (default)—Default interface policy, which enables the user role to access all interfaces.
+Interfaces accessible to the user role.
+VPN policies configured :
+deny—The VPN instance cannot be used by any VPN instance other than the VPN instance specified by the operation.
+permit (default)—Default VPN instance policy, which enables the user role to access all VPN instances.
+VPN instances accessible to the user role.
+User Role Rule Number (system pre-defined permission rule identified by sys-n)
+Operation licensing on the command line :
+permit—Permit operation.
+deny—Deny operation.
+Command line type :
+R—Read-only.
+W—Write.
+X—Execute.
+Type of user role rule :
+command:Command line based rules
+feature:Feature-based rules
+feature-group:Based on Feature Group Rules
+web-menu—Web menu-based rules.
+xml-element:rules based on XML elements
+oid—Rules based on the OID elements.
+Command string, feature name, feature group name, XML element, or OID specified in the user role rule
+A hyphen (-) means all features.
+'*'is a wildcard representation of 0 or more arbitrary characters
+Feature Name and Function Introduction
+All commands that start with the domain in system view and ISP domain view.
+All commands that start with the header in system view.
+All commands that begin with aaa in system view
+All commands that start with the display domain in user view.
+All commands that begin with user-group and user group view in system view.
+All commands that begin with local-user and local user view in system view.
+All commands that start with the display user-group in user view.
+All commands that start with the display debugging local-server keywords in user view.
+All commands that start with the debugging local-server in user view.
+All commands that start with the super keyword in user view.
+All commands that start with the display password-control keywords in user view.
+All commands that start with the reset password-control keywords in user view.
+All commands that start with password-control in system view.
+The type of the command is write and is used for configuring the system.
+This command displays only system configuration and maintenance information.
+The command line type is used to execute a command and is used to perform certain functions.
+Feature Group Name, where L2 and L3 are system-defined two feature groups
+For more information about the specific commands in features, refer to Table 2.

@@ -1,0 +1,53 @@
+version: '3'
+services:
+  web:
+    image: nmt/client:v1
+#    build: .
+    volumes:
+      - ./app:/app
+      #- ./log:/log
+      - ./custom.conf:/etc/nginx/conf.d/custom.conf
+      #- ./entrypoint.sh:/entrypoint.sh
+      - ./log/supervisord_stdout.log:/dev/stdout
+      - ./log/supervisord_stderr.log:/dev/stderr
+      #- ./log/main.log:/log/main.log
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "80:80"
+      - "8008:8008"
+    environment:
+#      - SERVER_IP_PORT=100.0.1.204:9000
+#      - DB_IP=100.0.1.204
+      - FLASK_APP=main.py
+      - NGINX_WORKER_PROCESSES=auto  #autodetect the number of CPUs available,default 1 
+      - UWSGI_CHEAPER=2  #The starting number of uWSGI processes,default 2,must be lower than UWSGI_PROCESSES
+      #- UWSGI_PROCESSES=64  #The maximum number of uWSGI processes,default 16
+      - FLASK_DEBUG=1
+      - 'RUN=flask run --host=0.0.0.0 --port=80'
+    restart: always
+    depends_on:
+      - mongodb
+    #command: flask run --host=0.0.0.0 --port=80
+    # Infinite loop, to keep it alive, for debugging
+    # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
+  server:
+    image: tensorflow/serving:latest
+    volumes:
+      - ./models:/models
+      - /etc/localtime:/etc/localtime:ro
+#
+    environment:
+      - MODEL_NAME=transformer
+    ports:
+      - "8500:8500"
+#      - "9000:8500"
+#    command: tensorflow_model_server --port=8500 --model_name=transformer --model_base_path=/models/transformer --enable_batching
+#    enable_batching: True
+    restart: always
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    restart: always

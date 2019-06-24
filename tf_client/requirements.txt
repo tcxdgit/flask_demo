@@ -1,0 +1,7 @@
+tensor2tensor==1.10.0
+tensorflow-gpu==1.12.0
+tensorflow_serving_api
+flask-bootstrap
+flask-wtf
+jieba
+pymongo

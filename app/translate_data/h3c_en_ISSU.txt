@@ -1,0 +1,387 @@
+Contents
+ISSU commands
+Use display install active to display active software image information.
+Command
+View
+Any view
+Default user role
+Parameters
+slot slot-number:Specifies an IRF member device by its member ID.
+If you do not specify a member device, this command displays information about all IRF member devices.
+verbose:Displays detailed information about active software images, including the name, basic information, and included components.
+If you do not specify this keyword, the command displays only software image files.
+Examples
+# Display brief information about active software images.
+# Display detailed information about active software images.
+display install active verbose
+Related Commands
+Use display install backup to display backup software image information for the next startup.
+verbose:Displays detailed information, including the package name, basic information, and included components.
+Usage Guidance
+If the boot image or system image does not exist or is damaged in the main startup software image list, use the main startup software image list.
+For more information about the software images used at the next startup, see software upgrade in Basic Configuration Guide.
+To modify the backup startup image list, use the boot-loader file command.
+# Display information about the backup startup software images.
+# Display detailed information about the backup startup software images.
+For more information about the command output, see Table 1.
+boot-loader file (basics command references/software upgrades)
+Use display install committed to display information about the main startup software images.
+You can use the install commit command to change the software image list on the device, but you must set the install commit command to make sure the current software images are posted to the main next-startup images.
+You can use this command to view the startup software images.
+Both the install commit and boot-loader file commands modify the main startup software image list.
+# Display information about the main startup software images.
+# Display detailed information about the main startup software images.
+Use display install inactive to display information about inactive software images in the root directories of the file systems.
+# Display brief information about inactive software images in the root directories of the file systems.
+# Display detailed information about inactive software images in the root directories of the file systems.
+Use display install ipe-info to display the software images included in an. ipe file.
+ipe-filename:Specifies an. ipe file in the filesystemname/filename format.
+The file must be saved in the root directory of any file system on the device, and you must specify a file system by its name and a maximum of 63 characters.
+For more information about specifying folders and files, see file system management in Fundamentals Configuration Guide.
+An. ipe file is a collection of one or more packages.
+After the user obtains the. ipe file, you can select the upgrade images.
+# Display the IPE information of flash:/ test.  # ipe.
+Use display install job to display ongoing ISSU activate, deactivate, and rollback operations.
+# Display ongoing ISSU activate, deactivate, and rollback operations.
+The output shows that the device is executing the install activate flash:/ feature1.  ? bin slot 1 command.
+Use display install log to display ISSU log information.
+log-id:Specifies an upgrade log by its ID.
+If you do not specify this keyword, the command displays all ISSU log information.
+verbose:Displays detailed log information.
+If you do not specify this keyword, the command displays only brief logs.
+The device records the operation process and whether the operation succeeded or failed after a user performs an installation, upgrade, unload, cancel, or rollback operation.
+Each log is assigned a globally unique ID.
+You can save a maximum of 50 ISSU log entries to the oldest ones when the new logs are reached.
+# Display all log information.
+# Display detailed information about ISSU log entry 1.
+display install log verbose
+Use display install package to display software image file information.
+filename:Specifies a. bin file in the filesystemname/filename format.
+all:Specifies all software image files in the root directories of the file systems on the master device.
+verbose:Displays basic information and components.
+If you do not specify this keyword, the command displays only basic information about software images.
+# Display information about the software package system.  # bin.
+# Display detailed information about the software package system.  # bin.
+Use display install rollback to display rollback point information.
+point-id:Specifies a rollback point by its ID.
+If you do not specify a rollback point ID, this command displays all rollback points.
+You can use this command to view the rollback point information.
+The issu command does not log the rollback point during an ISSU, so the issu command is not recorded.
+# Display all rollback points.
+The output shows that the device has two rollback points, and rollback point 1 is upgrading to flash:/ route-1.  ? bin to flash:/ route-2.  (# bin and rollback point 2, respectively.
+display install rollback
+Use display install what to display the software image file to which a component or file belongs.
+component name:Specifies a component name.
+file filename:Specifies the name of a file, a case-insensitive string of 1 to 63 characters.
+File name must be of the form.
+A component is a collection of features, and the features in the component are installed/uninstalled at the same time.
+When a software package operation error occurs, the system prompts the xx components or the xx files to run wrong operation, and can use the component name/filename to find the software package that it belongs to, thus helping to locate it further as a defective image.
+Verify the software package to locate the problem.
+Use the install verify command to verify the software package.
+After you execute this command, the system scans all software images in the root directories of the specified file systems.
+# Display information about the file system ppkg_ctrl, and the software package.
+display install whatever verbose
+Use display issu rollback-timer to display automatic rollback timer information.
+This feature might take longer than the timer because the automatic rollback timer will take effect on the next ISSU.
+Display automatic rollback timer information after the issu run switchover command is executed.
+# Display automatic rollback timer information after the issu accept command is executed.
+# No ISSU is performed to display the automatic rollback timer.
+display issu rollback-timer 100:: 1/64
+Use display issu state to display ISSU status information and status information.
+To upgrade issu commands, follow these steps and complete a series of steps during an ISSU, and the following steps occur :
+This command does not display the state machine in an ISSU that uses install commands.
+# Display ISSU status information when no ISSU process is running on the device.
+Display ISSU status information while the issu load command is being executed.
+display issu state verbose
+boot:Specifies a boot image file.
+system:Specifies system image files.
+feature:Specifies a space-separated list of up to 10 feature image files.
+filename & <1-30>:Specifies a. bin file in the filesystemname/filename. bin format.
+& <1 - 30> indicates that the previous parameter can be input up to 30 times.
+ipe ipe-filename:Specifies an. ipe file by its name, which is the name of an. ipe file in.
+# (Compatible version display examples)
+display version comp-matrix verbose
+Use install abort to cancel the abort operation.
+User View
+job-id:Specifies a job ID.
+If you do not specify this keyword, the command cancels all ongoing ISSU and uninstallation operations.
+Perform this task when you execute the install activate, install add, install commit, install deactivate, install remove, or install rollback to command.
+To manage and monitor these tasks, the system assigns a task ID to each task.
+A task ID represents a command.
+To view a job ID, use the display install job command.
+After the ongoing activation or uninstallation operation is canceled, the system rolls back to the state that was previously operational.
+# Deactivate all ongoing actions in the process.
+Use install activate to activate software images or identify the ISSU method.
+patch:Specifies the patch image file.
+Used to quickly repair system bugs.
+all:Specifies all member devices.
+test:Specifies the ISSU method.
+If you do not specify this keyword, the command applies.
+Before you use this command, make sure the license for a software package does not run on the device, and make sure the license for the device does not have a valid license.
+Otherwise, the commands fail to execute.
+The active software images take effect only on the current system after you activate the software images on the hardware with this command.
+To make an active software image take effect after the device reboots, you must also execute the install commit command.
+To activate patch images, use the install activate patch filename all command to activate patch images on all hardware at the same time, you do not need to execute the install commit command.
+If the filename is not a file on the member device to be upgraded, the system first copies the file to the member device to be upgraded.
+The device automatically backs up the configuration and state data of the master device after reboot.
+To display the stable state, use the display system stable state command.
+This command can be executed only when the System State is in the Stable state.
+Otherwise, the commands fail to execute.
+For more information about the display system stable state command, see device management commands in Basic Configuration Command Reference.
+The device can have a maximum of 32 software images, including the boot image, system image, feature image, and patch image, and only one boot image can be installed on the system image.
+# Display the ISSU method for feature images feature1.  # bin on member device 2.
+The output shows that the software will reboot.
+# Activates the system image.  # bin and the feature images feature1.  # bin from device 2.
+install activate slot 1
+Use install add to decompress an. ipe file.
+ipe-filename:Specifies an. ipe file in the filesystemname/filename format.
+filesystem:Specifies the name of the file system to be saved in. ipe files.
+Because the install command can only be an. bin package, use the install command to activate the image files before using the install command.
+To obtain an IP E file, use the display install ipe-info command to display the software images included in the. ipe file, use the display install add command to display the. ipe files and software image files.
+# Decompress all.  # ipe file is on storage medium flash.
+Use install commit to commit changes in software images.
+To change the startup software images on the device, execute this command only when you modify the current software image list on the device after the next reboot.
+Execute the install activate command and specify an incremental upgrade method.
+When the install deactivate command is executed
+The install rollback command.
+If you execute the install activate command, the system has modified the software next-startup software list when you execute the install activate command, and you can use the install commit command to update the software images after a reboot.
+Both the boot-loader file command and the install commit command take effect after you change the main startup software image list.
+The change of the two commands is that the install commit command automatically uses the list of currently-activated packages as the main next-startup images list.
+The boot-loader file command specifies other inactive software images, which you can specify as the main startup image list or the backup next startup image list.
+For more information about the active/standby software image, see software upgrade in Fundamentals Configuration Guide.
+# Make sure the package changes.
+Use install deactivate to deactivate feature images and patch images.
+You must specify a file system by its name and cannot contain the file system location.
+all:Specifies all member devices on which the specified patch image file has been activated.
+This command uninstalls only active software images.
+After you uninstall a software image in the specified slot, the feature of the uninstalled software images is removed from the running system.
+To make the uninstalled software images take effect after the device reboots, execute the install commit command to confirm the ISSU.
+To uninstall patch images, use the install deadlock filename all command while at the same time uninstalling patch images on all slots, you do not need to execute the install commit command.
+# Uninstall route-patch.  # bin on the specified slot.
+Use install remove to remove inactive software images.
+The file must be saved in the root directory of any file system on the device.  The file system must contain only the name of a file system.  The file system cannot contain file system location information.  The file system name can be up to 63 characters.
+inactive:Deletes all inactive software images in the root directories of the specified storage media.
+After you execute this command, the specified software images are deleted from the device.
+# Remove package flash:/ feature1.  # bin.
+Use install rollback to roll back to a specific rollback point, a rollback point.
+point-id:Specifies a rollback point by its ID when at least two rollback points exist in the system.
+To display available rollback points, use the display install rollback command.
+original:Rolls back to the original state of the ISSU.
+After each software image is activated or uninstalled, the system records the changes as rollback points.
+You can roll back the system to a specific history state or to the original state of the ISSU.
+For an upgrade to take effect only on the device during the current software image reboot, you must use the install commit command to commit the software image change after a reboot.
+The system supports a maximum of 50 rollback points and when the rollback point exceeds the maximum, the old rollback point is deleted and the new rollback point is saved.
+The system does not maintain any rollback points when the upgrade is rebooted and can only roll back to the original system.
+Patch images do not support rollback.
+# Scroll back to rollback point 1.
+# Perform a rollback to the original state of the ISSU.
+You can see the results performed by observing the changes in the active list and rollback point.
+The output shows that there are three currently-active packages, but there are only two confirmation that rollback point 1 is active flash:/ feature1-t0001015. .... bin.
+After you execute the install rollback to original command, the software set running on the device falls back to the ISSU start state, flash:/ feature1-t0001015. \ " bin is uninstalled.
+Use install verify to verify the software image status, image integrity, and image consistency.
+To ensure that the ISSU process functions after an ISSU, use this command to verify that the following software images are performed :
+Integrity—Verify that the boot, system, and feature images are complete.
+Consistency:Verify differences in the list of all activated software packages in the system to help users know whether the versions of each package are the same in the system.
+Package status:Check the differences between the list of active software images and the list of confirmed packages on each device to determine whether or not an unacknowledged package is available.
+You can use this command to perform software image check.
+When the system prompts for a complete software package, download and install the software images again.
+To ensure software image consistency, use the install activate, install deactivate, and install commit commands.
+# Verify the software package status, integrity, and consistency information on the device.
+Use issu accept to accept the upgrade to a compatible version and delete the automatic rollback timer.
+After you execute this command, the automatic rollback timer is removed and the ISSU process is not automatically rolled back.
+You do not need to execute this command when an ISSU is not compatible.
+# Verify the upgrade procedure if the version is compatible.
+Use issu commit to upgrade the original active MPU to a compatible version.
+slot slot-number:Specifies the original master or a subordinate member by its member ID.
+After all members are upgraded, the ISSU process ends and returns to the original state.
+After you execute this command, the ISSU status does not re-set the ISSU or rollback timer.
+To avoid upgrade errors, you must manually start the IRF fabric and rejoin the IRF fabric from the device.
+# When compatible, member 2 has been upgraded to become the new master, upgrade the original master (assuming member number is 3) and other members (assuming members are 4 and 1).
+For more information about the command output, see Table 9.
+Use issu load to upgrade the startup software images of the device and configure the new images as main startup software images of the device.
+filename & <1-30>:Specifies a Table package by its name, in the filesystemname/filename. bin format.
+The file must be saved in the root directory of any file system on the master device.  The file system must contain a file system name and a maximum of 63 characters from the storage medium name.
+ipe ipe-filename:Specifies an. ipe file in the filesystemname/filename format.
+slot slot-number:Specifies an IRF member device by its member ID.
+& <1-9> indicates that the previous parameter can be entered up to 9 times.
+If you have only one IRF member device, enter the member ID of the device to complete the upgrade.
+If the IRF fabric has multiple member devices :
+Only one slot-number can be entered when the version of the software package that you want to upgrade is compatible with the version of the package that the device is running on.
+You can enter multiple slot-number to upgrade more than one subordinate member device at a time when the software image version of the upgrade and the version of the running software images on the device are not compatible.
+If the IRF fabric is connected to a ring, it is recommended that you upgrade half of the number of physically adjacent neighbors at a time (also known as the opposite half upgrade).
+reboot:Specifies that the upgrade operation requires a compatible reboot of the member device to complete the upgrade if the upgrade result is an File-Level Incremental Upgrade or a Service-Level Incremental Upgrade.
+If you do not specify this keyword, the system upgrades based on the decision result.
+If the issu command does not overwrite all images that are running on the device, such as the new feature image is included in the new startup software images, and the issu command takes effect only after the ISSU images are valid.
+If the software images are not compatible with the issu command, the device fails the upgrade.
+After you enter the command, the system performs the following operations automatically :
+Checks the version compatibility.
+Determines the upgrade policy.
+Use the upgrade policy to upgrade the active MPU and configure the new images as follows the issu load command.
+# The feature image in flash:/ feature1.  # bin will be upgraded from device 2.
+# Perform a reboot feature image of device 2 by using the flash:/ feature1.  # bin upgrade with the parameter.
+The feature images on device 3 and 4 are upgraded using flash:/ feature1.  # bin.
+issu load command output
+Use issu one-step to perform an ISSU in one step.
+The file must be in the root directory of any file system on the master device or active MPU, and contain a file system name.
+When the IRF fabric has only one member device, enter the member ID of the device to complete the upgrade.
+When the version of software images to be upgraded and the current version of the image files on the device is compatible, only one slot number can be entered, and the slot becomes the new master after the IRF upgrade.
+When the software images to be upgraded and the current software version of the device are not compatible, you can enter multiple slot-number to upgrade multiple subordinate devices at a time.
+When the IRF fabric is connected to a ring, it is recommended that you upgrade half of the number of physically adjacent devices (also called half-duplex upgrades).
+If you do not specify a member device or PEX, the master device is automatically specified by the system.
+reboot:If the upgrade result is an File-Level Incremental Upgrade or a Service-Level Incremental Upgrade in a compatible version, the reboot will be used to reboot the device/member device/card to complete the upgrade.
+After you execute this command, the ISSU process does not perform rollback or any other actions.
+The specified target software image must be the same image version that supports one-click ISSU.
+If the startup software images do not contain any images, such as the feature images contained in the current startup images, and the feature images specified by this command take effect.
+If the startup software images are not compatible with the software images specified in this command, the device fails the upgrade.
+# Perform an ISSU to upgrade to flash:/ boot.  ? bin, and upgrade the system image by using flash:/ system.  # bin.
+Use flash:/ boot.  # bin to upgrade the boot image file in flash:/ system.  # bin, and upgrade the system image by using flash:/ feature1.  # bin.
+Table 1-11 issu one-step command output
+Use issu rollback to roll back to the previous version.
+The automatic rollback timer is configured by the issu rollback-timer command and the automatic rollback timer is manually rolled back.
+You can perform a manual rollback while an ISSU is in one of the following states :
+Switching (compatible upgrade)
+Switchover (compatible upgrade)
+A ISSU operation that rolls back if the ISSU status is Loading.
+After the rollback operation, use the display version command to verify the rollback result.
+If the switch does not perform a rollback or an automatic rollback, the whole system reboots, regardless of whether the state of the compatible upgrade or the ISSU.
+The automatic rollback timer is not enabled when an incompatible version is upgraded.
+A compatible version does not take effect until the issu run switchover command is executed.
+In the case of multiple members, the issu run switchover command is executed and the automatic rollback operation is rolled back before the ISSU, and the active/standby status is the same as before the ISSU.
+# Perform a rollback to the previous version.
+Use issu rollback-timer to set the automatic rollback timer.
+Use undo issu rollback-timer to restore the default.
+Default
+The automatic rollback timer is 45 minutes.
+System view
+minutes:Specifies the automatic rollback timer in minutes, in the range of 0 to 120.
+If the duration setting is 0, the automatic rollback feature is disabled.
+The automatic rollback timer can only be started on an IRF system with multiple member devices.
+The system automatically starts the automatic rollback timer when you execute the issu run switchover command in a compatible version.
+If you do not execute the issu accept or issu commit command before the timer expires, the system automatically rolls back to the original software version.
+The new ISSU settings take effect at the next time.
+# Set the automatic rollback timer to 50 minutes.
+Use issu run switchover to perform ISSU switchover.
+When only one member of the device needs to be upgraded, you do not need to use this command.
+Once this command is entered, the system will perform different actions automatically under different circumstances :
+A compatible upgrade causes the system to perform an active/standby/standby switchover for an upgraded process or a soft reboot or a reboot when the upgrade is rebooted, and the new master is elected as the subordinate device.
+For an incompatible upgrade, the issu load command splits the IRF fabric into two fabrics.
+After the issu run switchover command reboots and upgrades the original IRF fabric, the new IRF group switches the new IRF fabric to complete the upgrade.
+If you do not execute the issu accept or issu commit command when the automatic rollback timer expires, the system automatically rolls back to the previous version.
+The upgrade process is completed after the issu run switchover command is incompatible.
+# Perform an active/standby switchover when the system is compatible with the current version.
+In incompatible versions, an active/standby switchover occurred, and members 1 (master) and 2 (subordinate devices) were upgraded.
+issu run switchover count
+Use reset install log-history oldest to clear ISSU log entries.
+log-number:Specifies the number of ISSU log entries.
+After you execute this command, the system clears the specified number of ISSU log entries in sequence from the start time to finish.
+# Clear the two oldest ISSU log entries.
+Use reset install rollback oldest to clear ISSU rollback points.
+point-id:Specifies a rollback point by its ID.
+This command clears the specified rollback point and all rollback points created before the rollback point.
+# Clear rollback point 2 and all rollback points created before rollback point.
+Field
+Description
+Information about active software images.
+Software image file name.
+Information about the upgrade image.
+Manufacturing vendors
+Product Name
+Service name included in the package :
+This field displays boot if the image is a boot image.
+This field displays system image if the image is system image.
+If the boot patch image is displayed, it is the patch image of the boot image, and if it is the system patch image, it is the patch image of the system image.
+If the feature image does not contain a feature, this field displays the feature image for the feature.
+Platform Software Version Numbers
+Product Software Version Numbers
+Hardware type supported by the software package :
+mpu—Member device.
+Component information, which represents components of the software package
+The name of the component
+Description of the component.
+Actors and execution time of the ISSU action.
+Time when the ISSU operation was completed.
+Action to take when the ISSU is performed.
+Detailed information about the action of the activation packet.
+Indicates that the upgrade decision is successfully processed
+The package file is successfully extracted to the system.
+Deleted files from the system successfully.
+Roll back point information:n for rollback point ID.
+Upgrade from image A to software image B, and A and B in software image mode.
+Uninstall software image A and A is the name of the software package.
+Verify that the file is valid.
+Found File
+If the patch image is patch, the software image is patch image.
+No file is found in the root directory of the storage medium.
+Whether the automatic rollback timer is working :
+Working—The rollback timer has started.
+Not working—The automatic rollback timer has not started or has expired.
+Set the rollback timer in minutes.
+Time (in minutes) that the automatic rollback timer has elapsed.
+ISSU status :
+Init—The ISSU process has not started or has finished.
+Loading—The system is executing the issu load command.
+Loaded—The issu load command is completed.
+Switching—The issu run switchover command is being executed.
+switchover—The issu run switchover command is completed.
+Accepted—The issu accept command is completed.
+Committing—The system is executing the issu commit command.
+RollTaking—The system is being rolled back.
+Unknown—The member failed to view the device.
+Version compatibility check result :
+Compatible—Compatible upgrade.
+Incompatible—Upgrade to an incompatible version.
+Unknown—No upgrade is in progress.
+Operating mode of the device :
+Normal—The PoE power supply is operating correctly.
+Independent active:Specifies the standalone mode.
+When you upgrade to an incompatible version, the subordinate member that was upgraded first enters standalone mode.
+This mode enables different members on the same device to run different software versions.
+Upgrade method :
+Card by card:Upgrades units to stack member equipment before upgrading other members
+Complete the upgrade members.
+This value is Unknown when the device is in the rollback process.
+The member device is being upgraded.
+The device is not upgraded to indicate the current system software version
+The device does not have an upgrade image file.
+System software version before ISSU
+Unknown—The upgrade is detected when the device is not the original master, and the device is in the process of being upgraded.
+File names of the images that were running on the device before the ISSU.
+Destination version that is being upgraded.
+Destination file to be used during ISSU upgrade
+If upgrading, impacted feature module.
+This information is displayed only if the version is compatible.
+If you upgrade the specified software image file, the upgrade operation is not compatible.
+Compatible upgrade policy.
+This information appears only if the version is compatible.
+Possible values are :
+Service Upgrade—Service level upgrades.
+File Upgrade—File level upgrade.
+Reboot—The reboot method is used.
+For more information about compatible ISSU, see ISSU configuration in Fundamentals Configuration Guide.
+Copy the files from Location A to Location B.
+Upgrade summary.
+Product version number of the same type software package that the device is running.
+Version number of the target package.
+Compatible upgrade policy :
+Will be affected feature modules
+Ask if the user is performing a compatible upgrade.
+Please wait for the upgrade to take some time
+Indicates activation succeeded.
+Indicates activation failed
+The install command cannot be used to upgrade incompatible versions.
+This operation deletes the previous ISSU log and rollback point and the unsaved configuration might be lost, asking the user to proceed with the upgrade.
+Decompress the file from location A to location B.
+This field is available only when an. ipe file is upgraded.
+Copy the files from Location B to Location C.
+This prompt is displayed when a secondary device is configured
+Get upgrade policy
+Summary of Upgrades
+The product version number of the software package that will be upgraded
+Upgrade policy :
+File Upgrade:Specifies file level upgrades.
+Ask if users do not perform an incompatible upgrade
+Switching mode :
+Active standby process switchover—Switch from the active process to the standby process.
+Master subordinate switchover—Switch from the master device to a member device.
+Other Fields
+See Table 1-9

@@ -1,0 +1,839 @@
+目  录
+设备管理
+设备管理配置命令
+clock datetime命令用来配置设备的系统时间。
+命令
+缺省情况
+设备的系统时间为UTC时间2011年1月1日零点。
+视图
+用户视图
+缺省用户角色
+参数
+time:配置的时间,格式为HH:MM:SS(小时:分钟:秒),HH取值范围为0~23,MM和SS取值范围为0~59。
+如果要配置成整分,则可以不输入秒;如果要配置成整点,则可以不输入分和秒。
+比如将time参数配置为0表示零点。
+date:配置的日期,格式为MM/DD/YYYY(月/日/年)或者YYYY/MM/DD(年/月/日),MM的取值范围为1~12,DD的取值范围与月份有关,YYYY的取值范围为2000~2035。
+使用指导
+为了保证与其它设备协调工作,为了更好的监控和维护设备,请确保设备的系统时间是准确的。
+请先配置clock protocol none命令,再执行本命令。
+clock datetime命令中指定的时间会立即生效,作为当前的系统时间。
+后续,设备使用内部晶体震荡器产生的时钟信号计时。
+举例
+# 配置设备的系统时间为2015年1月1日8时8分8秒。
+# 配置设备的系统时间为2015年1月1日8时10分。
+相关命令
+clock protocol命令用来配置系统时间的获取方式。
+undo clock protocol命令用来恢复缺省情况。
+通过NTP协议获取时间。
+系统视图
+none:表示通过命令行配置系统时间。
+ntp:表示通过NTP(Network Time Protocol,网络时间协议)协议获取时间。
+关于NTP的详细介绍和配置,请参见“网络管理和监控配置指导”中的“NTP”。
+系统时间的获取方式有:
+配置clock protocol none命令后,通过clock datetime命令直接配置。
+clock datetime命令中指定的时间即为当前的系统时间。
+配置clock protocol ntp命令后,通过NTP协议从网络中获取时间。
+该方式下,设备会周期性的同步服务器的UTC(Coordinated Universal Time,国际协调时间)时间,并用同步得到的UTC时间和设备上配置的本地时区、夏令时参数运算,得出当前的系统时间。
+该方式获取的时间比命令行配置的时间更精准,推荐使用。
+多次执行本命令,最后一次执行的命令生效。
+# 配置获取UTC时间的方式为通过命令行配置。
+clock summer-time命令用来配置夏令时。
+undo clock summer-time命令用来恢复缺省情况。
+未配置夏令时。
+name:夏令时的名称,为1~32个字符的字符串,区分大小写。
+start-time:开始时间,格式为HH:MM:SS,HH取值范围为0~23,MM和SS取值范围为0~59。
+start-date:开始日期,有两种输入方式:
+直接一次性输入月和日,参数格式为MM/DD,MM取值范围为1~12,DD的取值范围与月份有关。
+分次输入月、日,各参数之间以<空格>键隔开。
+首先输入开始的月份,取值如下:January、February、March、April、May、June、July、August、September、October、November或December;然后输入开始的星期,用当月的第几个星期表示,取值如下:first、second、third、fourth、fifth或last;最后输入起始日,取值为Sunday、Monday、Tuesday、Wednesday、Thursday、Friday或Saturday。
+end-time:结束时间,格式为HH:MM:SS,HH取值范围为0~23,MM和SS取值范围为0~59。
+end-date:结束日期,有两种输入方式:
+直接一次性输入月日,参数格式为MM/DD,MM取值范围为1~12,DD的取值范围与月份有关。
+add-time:偏移时间,格式为HH:MM:SS,HH取值范围为0~23,MM和SS取值范围为0~59。
+配置该命令后,设备会自动重新计算当前的系统时间,计算后得到的系统时间可通过display clock命令查看。
+请将所有网络设备的夏令时和当地夏令时保持一致。
+# 配置夏令时PDT,从每年的8月1日的06:00:00开始,到9月1日的06:00:00结束,比当前设备标准时间增加1小时。
+clock timezone命令用来配置系统所在的时区。
+undo clock timezone命令用来恢复缺省情况。
+系统所在的时区为零时区,即设备采用UTC时间。
+zone-name:时区名称,为1~32个字符的字符串,区分大小写。
+add:在UTC时间的基础上增加指定时间。
+minus:在UTC时间的基础上减少指定时间。
+zone-offset:与UTC的时间差,格式为HH:MM:SS,HH取值范围为0~23,MM和SS取值范围为0~59,如果要配置成整分,则可以不输入秒;如果要配置成整点,则可以不输入分和秒。
+设配置该命令后,设备会自动重新计算当前的系统时间,计算后得到的系统时间可通过display clock命令查看。
+请将所有网络设备的时区和当地地理时区保持一致。
+# 配置本地时区名称为Z5,比UTC标准时间增加5小时。
+command命令用来为Job分配命令。
+undo command命令用来取消为Job分配的命令。
+没有为Job分配命令。
+Job视图
+id:命令编号,取值范围为0~4294967295。
+该编号表示命令在Job中的执行顺序,编号小的命令优先执行。
+command:为Job分配的命令。
+多次输入command命令可以为当前Job分配多条命令,不同命令用编号来唯一区别。
+如果新分配命令的编号和已分配的某命令的编号相同,则新分配的命令会覆盖已分配的命令。
+通过command分配的命令行必须是设备上可成功执行的命令行,不包括telnet、ftp、ssh2和monitor process。
+由用户保证配置的正确性,否则,命令行不能自动被执行。
+如果需要分配的命令(假设为A)是用户视图下的命令,则直接使用command命令分配即可;如果需要分配的命令(假设为A)是非用户视图下的命令,则必须先分配进入A所在视图的命令(指定较小的id值),再分配A。
+定时执行任务时,设备不会与用户交互信息。
+当需要用户交互确认时,系统将自动输入“Y”或“Yes”;当需要用户交互输入字符信息时,系统将自动输入缺省字符串,没有缺省字符串的将自动输入空字符串。
+# 为名称为backupconfig的Job分配命令,以便将配置文件startup.cfg备份到TFTP服务器192.168.100.11。
+# 为Job(假设名称为shutdownGE)分配命令,以便将接口Ten-GigabitEthernet1/0/1关闭。
+copyright-info enable命令用来开启版权信息显示功能。
+undo copyright-info enable命令用来关闭版权信息显示功能。
+版权信息显示功能处于开启状态。
+# 开启版权信息显示功能。
+重新登录设备后,会显示如下信息:
+display alarm命令用来显示设备的告警信息。
+任意视图
+slot slot-number:显示指定成员设备或者PEX的告警信息。
+slot-number表示设备在IRF中的成员编号或者PEX的虚拟槽位号。
+不指定该参数时,则表示所有成员设备/PEX。
+# 显示设备的告警信息。
+display alarm命令显示信息描述表
+display clock命令用来显示系统当前的时间、日期、本地时区以及夏令时配置。
+# 未配置本地时区时,显示系统当前日期和时间。
+显示信息中,时间的格式采用“时:分:秒.毫秒”的格式。
+# 配置了本地时区Z5后,显示系统当前日期和时间。
+# 配置了本地时区Z5和夏令时PDT后,显示系统当前日期和时间。
+display copyright命令用来显示设备的版权信息。
+缺省级别
+# 显示设备的版权信息。
+显示信息略......
+display cpu-usage命令用来显示CPU利用率的统计信息。
+summary:以列表形式显示CPU利用率的统计信息。
+不指定该参数时,以区段形式显示CPU利用率的统计信息。
+slot slot-number:显示指定成员设备的CPU利用率的统计信息。
+slot-number表示设备在IRF中的成员编号。
+不指定该参数时,显示的是所有成员设备的相应信息。
+cpu cpu-number:显示指定CPU的利用率统计信息。
+cpu-number表示CPU的编号。
+core { core-number | all }:显示CPU核利用率的统计信息。
+其中,all表示显示所有CPU核利用率的统计信息;core-number表示CPU核的编号,显示指定CPU核利用率的统计信息。
+# 以段的形式显示当前CPU利用率统计信息。
+# 以表的形式显示当前CPU利用率统计信息。
+display cpu-usage命令显示信息描述表
+display cpu-usage configuration命令用来显示CPU利用率历史信息记录功能的相关配置。
+slot slot-number:表示设备在IRF中的成员编号。
+不指定该参数时,显示的是主设备上的相应信息。
+cpu cpu-number:表示CPU的编号。
+# 显示CPU利用率历史信息记录功能的相关配置。
+display cpu-usage history命令用来以图表方式显示CPU利用率的历史信息。
+job job-id:显示指定进程的CPU利用率的历史信息。
+job-id表示进程的编号,取值范围为1~2147483647。
+不指定该参数时,显示的是整个系统的相应信息(整个系统的CPU利用率等于所有进程CPU利用率之和)。
+可以使用display process命令可以查看当前运行的进程的编号和名称,display process命令的详细介绍请参见“网络管理与监控”中的“系统维护与调试”。
+slot slot-number:显示指定成员设备的CPU利用率的历史信息。
+当不指定job和该参数时,显示的是所有成员设备上所有进程的相应信息;当指定job参数,但不指定该参数时,显示的是主设备上指定进程的相应信息。
+cpu cpu-number:显示指定CPU的利用率的历史信息。
+当不指定job和该参数时,表示所有CPU。
+当指定job参数,但不指定该参数时,表示默认CPU。
+开启CPU利用率历史记录功能后,系统每隔一定时间(可通过monitor cpu-usage interval命令配置)会对CPU的利用率进行采样,并把采样结果保存到历史记录区。
+通过display cpu-usage history命令可以查看到最近60个采样点的值。
+结果以坐标的形式进行显示,显示信息中:
+纵坐标表示利用率,采用就近显示的原则。
+比如,利用率的间隔为5%,则实际统计值53%将被显示成55%,实际统计值52%将被显示成50%。
+横坐标表示时间,时间越靠左表示距离当前时间越近。
+用连续的#号表示该时刻的利用率,某个时间点上最高处的#号对应的纵坐标值即为该时刻CPU的利用率。
+# 以图表方式显示CPU利用率的历史记录。
+以上显示信息表明系统(用“SYSTEM”表示,运行在Slot 1 CPU 0上)在最近60分钟内CPU的利用率情况:12分钟前大约为5%,13分钟前大约为10%,14分钟前大约为15%,15分钟前大约为10%,16、17分钟前大约为5%,18分钟前大约为10%,19分钟前大约为5%,其它时间均小于或等于2%。
+display device命令用来显示设备信息。
+flash:显示Flash的信息。
+usb:显示USB接口的信息。
+slot slot-number:显示指定成员设备或者PEX的信息。
+不指定该参数时,表示所有成员设备/PEX。
+subslot subslot-number:显示指定子卡的信息。
+subslot-number表示子卡所在的子槽位号。
+不指定该参数时,不会显示子卡的信息。
+仅S6800-2C、S6800-2C-FC和S6800-4C交换机支持该参数。
+verbose:显示设备的详细信息。
+不指定该参数时,显示设备的简要信息。
+不指定flash和usb参数时,显示成员设备的信息。
+# 显示设备信息。
+display device命令显示信息描述表
+display device manuinfo命令用来显示设备的电子标签信息。
+slot slot-number:显示指定成员设备或者PEX的电子标签信息。
+不输入该参数时,显示所有成员设备/PEX的相应信息。
+subslot subslot-number:显示指定子卡的电子标签信息。
+电子标签信息也可以称为永久配置数据或档案信息等,在硬件的调测(调试、测试)过程中被写入到设备的存储器件中,包括硬件的名称、生产序列号、MAC地址、制造商等信息。
+# 显示设备的电子标签信息。
+display device manuinfo fan命令用来显示风扇的电子标签信息。
+fan-id:表示设备上风扇的ID编号。
+# 显示指定风扇的电子标签信息。
+display device manuinfo power命令用来显示电源的电子标签信息。
+slot slot-number:表示设备在IRF中的成员编号或者PEX的虚拟槽位号。
+power-id:表示设备上电源的ID编号。
+# 显示指定电源的电子标签信息。
+display diagnostic-information命令用来收集诊断信息。
+hardware:收集硬件相关的诊断信息。
+infrastructure:收集基础模块的诊断信息。
+l2:收集二层特性相关诊断信息。
+l3:收集三层特性相关诊断信息。
+service:收集上层业务模块相关诊断信息。
+key-info:收集关键诊断信息。
+当设备异常或者运行时间较长时,可能会产生较多诊断信息,此时,使用该关键字,即可以收集到关键的诊断信息,又可以缩短诊断信息的收集时间。
+不指定该参数时,收集当前全部诊断信息。
+filename:表示将收集到的诊断信息保存到指定文件。
+filename表示文件的名称,后缀必须为“.tar.gz”。
+不指定该参数时,用户可根据提示信息选择将诊断信息保存到指定文件或者是直接显示诊断信息。
+在日常维护或系统出现故障时,为了便于问题定位,用户需要查看各个模块的诊断信息。
+因为各个功能模块都有其对应的运行信息,所以一般情况下,用户需要逐条运行相应的display命令。
+为便于一次性收集更多信息,用户可以在任意视图下执行display diagnostic-information命令,收集多个模块的诊断信息。
+使用该命令,用户可以直接显示指定的诊断信息或者将诊断信息直接保存到指定文件,因为诊断信息较多,系统会自动将该文件压缩后保存,文件名后缀为“.tar.gz”。
+如果要在设备上查看该文件的内容,请执行以下操作:
+使用tar extract命令将文件XXXX.tar.gz解包成文件XXXX.gz。
+使用gunzip命令将文件XXXX.gz解包成文件XXXX。
+使用more命令查看文件XXXX的内容。
+不指定filename参数执行display diagnostic-information命令时,系统会要求用户选择显示诊断信息还是将诊断信息保存到文件中。
+如果用户选择保存诊断信息,且当系统提示用户输入文件名时直接回车,设备会自动将当前诊断信息保存到一个新文件,并使用设备名称和当前系统时间为该文件命名,以免和现有文件重名,导致现有文件被覆盖。
+如果设备名称中包含“/”、“\”、“:”、“*”、“?”
+、“<”、“>”、“|”、“"”等特殊字符,在给诊断文件命名时,这些特殊字符会被转换为下划线“_”。
+比如设备的名称为A/B,设备会使用形如flash:/diag_A_B_20160101-000438.tar.gz的字符串为新生成的诊断文件命名。
+未指定hardware、infrastructure、l2、l3和service参数时,将收集设备产生的所有诊断信息。
+该命令不支持“|”、“>”和“>>”参数。
+执行本命令收集诊断信息时,请不要配置设备,以免影响收集结果。
+# 收集系统当前各个功能模块运行的统计信息。
+# 将收集到的诊断信息保存到缺省诊断文件。
+请在“Please input the file name”提示信息处,直接回车。
+# 将收集到的诊断信息保存到文件test.tar.gz。
+gunzip(基础配置命令参考/文件系统管理)
+more(基础配置命令参考/文件系统管理)
+tar extract(基础配置命令参考/文件系统管理)
+display environment命令用来显示设备上温度传感器的温度信息。
+slot slot-number:显示IRF中指定成员设备或者PEX上的温度传感器的温度信息。
+不指定该参数时,显示的是IRF中所有温度传感器的温度信息。
+不指定该参数时,显示所有成员设备和PEX的对应信息。
+# 显示设备上所有温度传感器的温度信息。
+display environment命令显示信息描述表
+display fan命令用来显示风扇的工作状态。
+不指定该参数时,表示所有风扇。
+fan-id:表示设备内置风扇的编号。
+不指定该参数时,表示指定位置的所有风扇。
+# 显示设备上所有风扇的工作状态。
+display fan命令显示信息描述表
+display hardware-resource switch-mode命令用来显示设备MAC地址表、ARP表/ND表、路由表的硬件资源模式。
+# 显示设备设备MAC地址表、ARP表/ND表、路由表的硬件资源模式。
+display hardware-resource switch-mode命令显示信息描述表
+hardware-resource routing-mode(三层技术-IP路由命令参考/IP路由基础)
+display memory命令用来显示内存使用情况。
+summary:显示内存使用情况的简要信息。
+不指定该参数时,显示内存使用情况的详细信息。
+不指定该参数时,表示所有成员设备。
+cpu cpu-number:表示CPU编号。
+# 显示设备的内存使用情况的详细信息。
+# 显示设备的内存使用情况的简要信息。
+display memory命令显示信息描述表
+display memory-threshold命令用来显示内存告警门限相关信息。
+不指定该参数时,表示主设备。
+当设备已经使用的物理内存大小超过内存某个告警门限阈值时,系统会认为发生了一次该类型内存异常,并记录第一次、最近一次发生异常的时间,以及这段时间内发生的该类异常的次数。
+如果想了解该类异常的详细情况,请查看日志信息,可按日志摘要关键字“MEM_EXCEED_THRESHOLD”或“MEM_BELOW_THRESHOLD”进行搜索。
+# 显示内存告警门限相关信息。
+display memory-threshold命令显示信息描述表
+display power命令用来显示设备电源的信息。
+不指定该参数时,表示所有电源。
+power-id:表示电源的编号。
+不指定该参数时,表示指定位置的所有电源。
+# 显示设备电源的状况。
+display power命令显示信息描述表
+display scheduler job命令用来显示Job的配置信息。
+job-name:Job的名称,为1~47个字符的字符串,区分大小写。
+不指定该参数时,则显示所有Job的配置信息。
+# 查看所有Job的配置信息。
+以上显示信息表明,设备当前配置了3个Job,分别显示了Job的名称,以及为Job分配的命令(如果没有为Job分配命令,则只显示Job的名称),不同Job间用空行分隔。
+display scheduler logfile命令用来显示Job的执行日志信息。
+# 显示Schedule日志文件的相关信息。
+display scheduler logfile命令显示信息描述表
+display scheduler reboot命令用来显示定时重启功能的相关配置。
+# 显示定时重启功能的相关配置。
+display scheduler schedule命令用来显示Schedule的相关信息。
+schedule-name:Schedule的名称,为1~47个字符的字符串,区分大小写。
+如果不指定该参数,则显示所有Schedule的信息。
+# 显示所有Schedule的信息。
+display scheduler schedule命令显示信息描述表
+display system stable state命令用来显示系统的稳定状态。
+在进行ISSU升级或主备倒换前,请先执行该命令,检查设备是否处于稳定状态。
+如果System State未处于Stable状态,不能进行ISSU升级;如果Redundancy Stable未处于Stable状态,不能进行主备倒换。
+设备启动需要一定的时间,才能达到Stable状态。
+如果设备长时间未能进入Stable状态,可通过该命令的显示信息找出未稳定的设备,根据其具体状态,采取进一步措施。
+系统处于不稳定状态时,需要结合相关命令查看设备的具体情况。
+例如:
+通过display device命令查看设备是否处于故障状态。
+通过display ha service-group命令查看HA服务组的状态,以找出未批备完成的模块。
+通过Probe视图下的display system internal process state命令查看服务启动状态。
+操作时,建议多次执行命令,以确认稳定状态的连续性。
+# 显示系统的稳定状态。
+display system stable state命令显示信息描述表
+display ha service-group(可靠性命令参考/进程分布优化)
+display system-working-mode命令用来显示设备的工作模式。
+# 显示设备的工作模式。
+display transceiver alarm命令用来显示可插拔接口模块的当前故障告警信息。
+interface [ interface-type interface-number ]:显示接口上插入的可插拔接口模块的当前故障告警信息。
+interface-type interface-number表示接口类型和接口编号,如果不指定该参数,表示所有接口。
+目前,使用的可插拔接口模块可能出现的故障告警信息见“display transceiver alarm命令输出信息描述表”。
+如果没有故障,则显示为None。
+SFP/SFP+的display transceiver alarm命令输出信息描述表
+QSFP+/QSFP28的display transceiver alarm命令输出信息描述表
+# 显示接口Ten-GigabitEthernet1/0/1上插入的可插拔接口模块的当前故障告警信息。
+display transceiver alarm显示信息描述表
+display transceiver diagnosis命令用来显示可插拔光模块的数字诊断参数的当前测量值。
+interface [ interface-type interface-number ]:显示接口上插入的可插拔光模块的数字诊断参数的当前测量值。
+# 显示接口Ten-GigabitEthernet1/0/1上插入的可插拔光模块的数字诊断参数的当前测量值。
+display transceiver diagnosis显示信息描述表
+display transceiver interface命令用来显示可插拔接口模块的主要特征参数。
+interface-type interface-number:显示接口上插入的可插拔接口模块的主要特征参数。
+# 显示接口Ten-GigabitEthernet1/0/1上插入的可插拔接口模块的主要特征参数。
+display transceiver manuinfo命令用于显示可插拔接口模块的电子标签信息。
+interface [ interface-type interface-number ]:显示接口上插入的可插拔接口模块的部分电子标签信息。
+# 显示接口Ten-GigabitEthernet1/0/1上插入的可插拔接口模块的电子标签信息。
+display version命令用来显示系统版本信息。
+# 查看系统版本信息。
+display version-update-record命令用来显示启动软件包版本更新操作的记录。
+设备启动时会记录当前使用的启动软件包版本信息,如果在运行过程中进行启动软件包版本更新操作,系统会记录该次更新的简要信息,包括升级时间和版本,以便管理员了解相关信息。
+设备重启这些记录也不会被删除。
+# 显示设备启动软件包版本更新操作的记录。
+display version-update-record命令显示信息描述表
+fan prefer-direction命令用来配置设备期望的风扇模块的风道方向。
+undo fan prefer-direction命令用来恢复缺省情况。
+用户期望的风道方向为power-to-port,即电源侧进风、端口侧出风。
+slot slot-number:表示设备的成员编号或者PEX的虚拟槽位号。
+port-to-power:表示设备期望的风道方向是端口侧进风、电源侧出风。
+power-to-port:表示设备期望的风道方向是电源侧进风、端口侧出风。
+# 配置成员设备1的设备期望的风扇模块的风道方向为port-to-power。
+hardware-resource switch-mode命令用来配置MAC地址表、ARP表/ND表、路由表的硬件资源模式。
+MAC地址表、ARP表/ND表、路由表的硬件资源模式为0。
+0:配置MAC地址表、ARP表/ND表、路由表的硬件资源模式为0。
+1:配置MAC地址表、ARP表/ND表、路由表的硬件资源模式为1。
+2:配置MAC地址表、ARP表/ND表、路由表的硬件资源模式为2。
+3:配置MAC地址表、ARP表/ND表、路由表的硬件资源模式为3。
+4:配置MAC地址表、ARP表/ND表、路由表的硬件资源模式为4。
+MAC地址表、ARP表/ND表、路由表的硬件资源模式不同,设备最多可存储的MAC地址表、ARP表/ND表、路由表的条数不同,详细介绍请参见“基础配置指导”中的“设备管理”。
+当使用本命令将模式配置为4时,请不要创建暂时不使用的VPN实例,以免浪费路由表资源。
+配置该命令后,须手工保存配置并重启设备才能生效。
+重启设备前请评估重启对网络造成的影响,做好相关准备工作。
+# 配置MAC地址表、ARP表/ND表、路由表的硬件资源模式1。
+header命令用来配置欢迎信息。
+undo header命令用来取消配置的欢迎信息。
+未配置欢迎信息。
+legal:配置登录终端界面前的授权信息,在输入认证用户名和密码前输出。
+login:配置登录验证时的欢迎信息。
+motd:配置登录终端界面前的欢迎信息。
+shell:配置用户登录进入用户视图时的欢迎信息。
+text:欢迎信息的内容。
+内容的输入支持单行和多行两种方式,具体输入规则请参见“基础配置指导”中的“设备管理”。
+# 配置legal欢迎信息。
+job命令用来为Schedule分配Job。
+undo job命令用来将Job从Schedule中删除。
+未为Schedule分配Job。
+Schedule视图
+多次执行该命令,可以为Schedule分配多个Job。
+多个Job在Schedule指定的时间同时执行,没有先后顺序。
+分配的Job必须是设备上已经创建的Job,否则不能分配。
+Job可以通过scheduler job命令来创建。
+# 为Schedule分配一个名称为save-job的Job。
+memory-threshold命令用来配置空闲内存告警的门限值。
+undo memory-threshold命令用来恢复缺省情况。
+对于S6800-54QT(LS-6800-54QT)、S6800-54QT(LS-6800-54QT-H1)、S6800-54QF(LS-6800-54QF)和S6800-54QF(LS-6800-54QF-H1)设备:
+设备以出厂配置启动时,缺省情况下,一级告警门限为122MB,二级告警门限为61MB,三级告警门限为41MB,系统恢复到正常的内存门限为143MB,预告警门限为164MB,预告警解除门限为184MB
+设备以空配置启动时,缺省情况下,一级告警门限为256MB,二级告警门限为128MB,三级告警门限为64MB,系统恢复到正常的内存门限为304MB,预告警门限为320MB,预告警解除门限为368MB
+其他设备在缺省情况下,一级告警门限为256MB,二级告警门限为128MB,三级告警门限为64MB,系统恢复到正常的内存门限为304MB,预告警门限为320MB,预告警解除门限为368MB
+ratio:表示以百分比形式配置门限。
+不指定该参数时,表示配置的是门限的大小,单位为MB。
+minor minor-value:一级告警门限。
+输入该参数的值时可通过输入?,来获取该参数的取值范围。
+取值为0时,表示关闭该级门限告警功能。
+severe severe-value:二级告警门限。
+critical critical-value:三级告警门限。
+normal normal-value:系统内存恢复正常状态时的内存大小。
+early-warning early-warning-value:预警门限。
+secure secure-value:预警恢复门限。
+系统实时监控系统剩余空闲内存大小,当条件达到时,就产生相应的告警/告警解除通知,以便通知关联的业务模块/进程采取相应的措施,以便最大限度的利用内存,又能保证设备的正常运行。
+关于告警门限的详细介绍请参见“基础配置指导”中的“设备管理”。
+# 配置一级、二级、三级告警门限分别为64MB、48MB、32MB,当系统剩余空闲内存大于96MB时,恢复到正常状态。
+memory-threshold usage命令用来配置内存利用率阈值。
+undo memory-threshold usage命令用来恢复缺省情况。
+内存利用率阈值为100%。
+memory-threshold:内存利用率阈值百分比,取值范围为0~100。
+系统每隔1分钟会对内存利用率进行采样,并将采样值和用户配置的内存利用率阈值比较。
+当采样值大时,则认为内存利用率过高,设备会发送Trap报文。
+# 配置内存利用率阈值为80%。
+monitor cpu-usage enable命令用来开启CPU利用率历史记录功能。
+undo monitor cpu-usage enable命令用来关闭CPU利用率历史记录功能。
+CPU利用率历史记录功能处于开启状态。
+slot slot-number:表示设备在IRF中的成员编号,不指定表示主设备。
+开启CPU利用率历史记录功能后,系统会每隔一定时间(可通过monitor cpu-usage interval命令配置)对CPU的利用率进行采样,并把采样结果保存到历史记录区。
+这些记录可通过display cpu-usage history命令查看,以便用户监控设备近期的运行情况。
+# 打开CPU利用率历史记录功能。
+monitor cpu-usage interval命令用来配置CPU利用率历史记录的采样周期。
+CPU利用率历史记录采样周期为1分钟。
+interval:CPU利用率历史记录采用周期,取值为5Sec、1Min或者5Min,不区分大小写。
+输入该参数时,请完整输入,否则,系统会提示参数错误。
+# 配置CPU利用率历史记录的采样周期为5秒。
+monitor cpu-usage threshold命令用来配置CPU利用率阈值。
+undo monitor cpu-usage threshold命令用来恢复缺省情况。
+CPU利用率高级别告警门限为99%,低级别告警门限为80%,恢复门限为75%。
+severe-threshold:CPU利用率高级别告警门限,取值范围为2~100,单位为百分比。
+minor-threshold minor-threshold:CPU利用率低级别告警门限,取值范围为1~“severe-threshold的配置值减1”,单位为百分比。
+recovery-threshold recovery-threshold:CPU利用率恢复门限,取值范围为0~“minor-threshold的配置值减1”,单位为百分比。
+系统每隔1分钟会对CPU的利用率进行采样,并将采样值和用户配置的告警门限比较。
+当采样值大时,则认为利用率过高,设备会进行相应的处理。
+# 配置CPU利用率高级别告警门限为90%,低级别告警门限为85%,恢复门限为70%。
+monitor resend cpu-usage命令用来配置发送CPU告警事件的间隔。
+undo monitor resend cpu-usage命令用来取消CPU告警事件发送间隔的配置。
+持续300秒超过低级别告警门限则上报一次CPU低级别告警事件,持续60秒超过高级别告警门限则上报一次CPU高级别告警事件。
+minor-interval minor-interval:CPU低级别告警事件周期发送的间隔,取值范围为10~3600,且只能是5的倍数,单位为秒。
+severe-interval severe-interval:CPU高级别告警事件周期发送的间隔,取值范围为10~3600,且只能是5的倍数,单位为秒。
+设备定期对CPU使用率进行采样,并将采样值与告警门限进行比较。
+当采样值从小于或等于变成大于某级别告警门限时,CPU将进入该级别告警状态并生成相应的告警事件。
+CPU处于低级别告警状态时,会周期发送CPU低级别告警事件,直到CPU进入高级别告警状态或者低级别告警状态解除。
+CPU处于高级别告警状态时,会周期发送CPU高级别告警事件,直到高级别告警状态解除。
+使用本命令可以修改CPU告警事件的发送周期。
+# 配置slot 1 CPU 0低级别告警事件的发送周期为60秒。
+monitor resend memory-threshold命令用来配置发送内存告警事件的间隔。
+undo monitor resend memory-threshold命令用来取消内存告警事件发送间隔的配置。
+持续1小时超过预告警门限则上报一次预告警事件通知,持续12小时超过一级告警门限则上报一次一级告警事件通知,持续3小时超过二级告警门限则上报一次二级告警事件通知,持续1小时超过三级告警门限则上报一次三级告警事件通知。
+critical-interval critical-interval:内存三级告警事件周期发送的间隔,取值范围1~48,单位为小时。
+early-warning-interval early-warning-interval:内存预告警事件周期发送的间隔,取值范围1~48,单位为小时。
+minor-interval minor-interval:内存一级告警事件周期发送的间隔,取值范围1~48,单位为小时。
+severe-interval severe-interval:内存二级告警事件周期发送的间隔,取值范围1~48,单位为小时。
+设备定期对内存剩余值进行采样,并将采样值与告警门限进行比较。
+当采样值从大于变成等于或小于某级别告警门限时,内存将进入该级别告警状态并生成相应的告警事件。
+内存支持多个级别的告警,这些告警的严重程度从高到低依次为:内存三级告警、内存二级告警、内存一级告警、内存预告警。
+内存处于低级别告警状态时,会周期发送内存低级别告警事件,直到设备进入更高级别告警状态或者低级别告警状态解除。
+内存处于高级别告警状态时,会周期发送内存高级别告警事件,直到高级别告警状态解除。
+使用本命令可以修改内存告警事件的发送周期。
+# 配置slot 1 CPU 0内存一级告警事件的发送周期为12小时。
+parity-error monitor log enable命令用来允许生成奇偶校验错误日志。
+undo parity-error monitor log enable命令用来禁止生成奇偶校验错误日志。
+不允许生成奇偶校验错误日志。
+设备在运行过程中,会自动检测并记录转发芯片上表项发生奇偶校验错误的次数。
+配置本命令后,当设备奇偶校验错误时,设备会自动生成日志记录奇偶校验错误的详细信息。
+# 允许生成奇偶校验错误日志。
+parity-error monitor period命令用来配置奇偶校验错误次数的采样周期。
+undo parity-error monitor period命令用来恢复缺省情况。
+奇偶校验错误次数的采样周期为60秒。
+value:表示奇偶校验错误次数的采样周期,取值范围为1~86400,单位为秒。
+配置本命令后,设备会按周期收集奇偶校验错误发生的次数。
+# 配置奇偶校验错误次数的采样周期为120秒。
+parity-error monitor threshold命令用来配置奇偶校验错误次数的告警门限。
+undo parity-error monitor threshold命令用来恢复缺省情况。
+奇偶校验错误次数的告警门限为5000次。
+value:表示奇偶校验错误次数的告警门限,取值范围为1~1000000,单位为次数。
+配置本命令后,如果设备在采样周期内发生奇偶校验错误的次数大于配置的告警门限,则发送告警提示用户。
+# 配置奇偶校验错误次数的告警门限为8000次。
+password-recovery enable命令用来开启密码恢复功能。
+undo password-recovery enable命令用来关闭密码恢复功能。
+密码恢复功能处于开启状态。
+配置密码恢复功能后,当用户忘记Console口认证密码或者登录认证失败,导致无法使用命令行操作设备时,可通过BootWare菜单清除该认证密码,再继续使用设备;关闭密码恢复功能后,设备将处于一个安全性更高的状态,即当出现上述情况时,若想继续使用Console口对设备进行命令行操作,只能通过BootWare菜单选择将设备恢复为出厂配置之后方可继续操作,这样可以有效地防止非法用户获取启动配置文件。
+BootWare菜单中支持配置的选项与密码恢复功能的配置有关,详见设备的版本说明书。
+# 关闭密码恢复功能。
+reboot命令用来重启设备。
+subslot subslot-number:子卡所在的子槽位号。
+force:强制重启:
+不指定该参数时,重启设备,系统会做一些保护性检查(如启动文件是否存在,是否正在写磁盘等),若检查不通过则退出处理,不会重启设备;
+指定该参数时,系统将不进行任何检查,直接执行重启操作。
+重新启动可能会导致业务中断,请谨慎使用该命令。
+使用force参数时,系统在重启时不会做任何保护性措施。
+重启后,可能导致文件系统损坏,请谨慎使用该参数。
+建议在系统故障或无法正常重启时,才使用该参数。
+如果主用启动文件损坏或者不存在,则不能通过reboot命令重启设备。
+此时,可以通过指定新的主用启动文件再重启。
+如果设备在准备重启时,用户正在进行文件操作,为了安全起见,系统将不会执行此次重启操作。
+不指定slot参数,会重启所有成员设备。
+指定slot参数,不指定subslot参数,会重启指定成员设备。
+重启主设备时,如果备设备不存在,会重启整个IRF;如果备设备存在并稳定运行,会引起主备倒换。
+当系统中有成员设备处于非稳定状态时,请不要使用reboot命令来触发主备倒换,以免影响IRF和成员设备的运行。
+可使用display system stable state命令来显示IRF的稳定状态。
+# 重启设备,并保存配置文件。
+# 强制重启设备。
+reset scheduler logfile命令用来清除Schedule日志文件的相关信息。
+# 清除Schedule日志文件的相关信息。
+reset version-update-record命令用来清除启动软件包版本更新操作的记录。
+# 清除设备启动软件包版本更新操作的记录。
+resource-monitor minor resend enable命令用来开启周期发送低级别资源告警通知功能。
+undo resource-monitor minor resend enable命令用来关闭周期发送低级别资源告警通知功能。
+周期发送低级别资源告警通知功能处于开启状态。
+如果剩余的资源小于或等于低级别告警门限且大于高级别告警门限,则资源进入低级别告警状态,并生成低级别告警通知。
+当资源一直处于低级别告警状态时:
+开启周期发送低级别资源告警通知功能后,第一次达到低级别告警状态时,会生成低级别告警通知,后续还会周期生成低级别告警通知。
+当剩余资源达到更高级别告警门限时,将会生成更高级别的告警通知,暂时抑制低级别的告警通知。
+直到高级别的告警状态解除,再周期输出低级别的告警通知。
+关闭周期发送低级别资源告警通知功能后,只有第一次达到低级别告警状态时,才生成低级别告警通知,不会连续生成低级别告警通知。
+高级别告警通知重发功能一直处于开启状态,不能通过命令行配置。
+# 开启周期发送低级别资源告警通知功能。
+resource-monitor output命令用来配置资源告警通知的输出方向。
+undo resource-monitor output命令用来关闭资源告警通知的输出方向。
+资源告警通知会同时向NETCONF、SNMP、信息中心三个方向输出。
+netconf-event:将资源告警通知输出到NETCONF模块。
+snmp-notification:将资源告警通知输出到SNMP模块
+syslog:将资源告警通知输出到信息中心模块。
+设备会实时监控一些重要资源的是使用情况,当达到指定门限时,设备会生成对应的资源告警通知,这些通知可以输出到以下三个方向:
+NETCONF模块。
+通过配置NETCONF模块的参数,可以将资源告警通知以NETCONF事件的形式发送给用户。
+关于NETCONF的详细介绍请参见“网络管理和监控配置指导”中的“NETCONF”。
+信息中心模块。
+通过配置信息中心模块的参数,可以将资源告警通知以系统日志的形式发送给用户。
+关于信息中心的详细介绍请参见“网络管理和监控配置指导”中的“信息中心”。
+SNMP模块。
+通过配置SNMP模块的参数,可以将资源告警通知以Trap或者Inform消息的形式发送给用户。
+关于SNMP的详细介绍请参见“网络管理和监控配置指导”中的“SNMP”。
+执行undo resource-monitor output命令,并且不指定可选参数时,表示资源告警通知不会向NETCONF、SNMP、信息中心三个方向输出。
+# 将资源告警通知输出到信息中心模块。
+resource-monitor resource命令用来配置生成资源告警通知的门限。
+undo resource-monitor resource命令用来取消资源告警通知的门限配置。
+不同类型资源的缺省情况不同
+请使用display current-configuration | include "resource-monitor resource"命令查看
+resource-name:需要监测的资源的名称,不区分大小写,需要完整输入参数的值。
+参数的取值请
+slot slot-number:表示监测指定成员设备上的资源。
+cpu cpu-number:表示监测指定CPU上的资源。
+cpu-number表示在CPU的编号。
+by-percent:以百分比的方式配置告警门限。
+minor-threshold minor-threshold:低级别告警门限。
+severe-threshold severe-threshold:高级别门限。
+配置本命令后,设备会监测资源的剩余情况,周期采样监测对象的值,并和配置的告警门限进行比较。
+当达到条件时,设备会生成告警通知。
+# 配置slot 1上ARP资源的低级别门限为30%,高级别门限为10%。
+restore factory-default命令用来将设备恢复到出厂状态。
+请谨慎使用该命令。
+当设备使用场景更改,或者设备出现故障时,可以使用本命令来将设备恢复到出厂状态。
+# 将设备恢复到出厂状态。
+scheduler job命令用来创建Job,并进入Job视图。
+如果指定的Job已存在,则直接进入Job视图。
+undo scheduler job命令用来删除已创建的Job。
+不存在Job。
+一个Job可以被多个Schedule引用。
+Job视图下用户可以通过command命令为Job分配命令。
+# 创建名称为backupconfig的Job并进入Job视图。
+scheduler logfile size命令用来配置Schedule日志文件的大小。
+Schedule日志文件的大小为16KB。
+value:Schedule日志文件的大小,取值范围为16~1024,单位是KB。
+Schedule日志文件用来记录Job下命令行的执行结果。
+如果该文件的大小超过了用户配置值,则系统会把老的记录删除,用来记录新的记录。
+如果要记录的日志信息超长,超过了日志文件的大小,则该日志超出的部分不会记录。
+# 配置Schedule日志文件的大小为32KB。
+scheduler reboot at命令用来配置设备重启的具体时间和日期。
+undo scheduler reboot命令用来取消定时重启配置。
+未配置设备重启的具体时间和日期。
+time:设备重启的时间,格式为HH:MM。
+HH代表小时,取值范围为0~23,MM代表分钟,取值范围为0~59。
+date:设备重启的日期,格式为MM/DD/YYYY(月/日/年)或者YYYY/MM/DD(年/月/日)。
+YYYY的取值范围为2000~2035;
+MM的取值范围为1~12;
+DD的取值范围与具体月份有关。
+该命令会使设备在将来的某个时间点重新启动,从而导致业务中断,请谨慎使用。
+如果没有指定date参数,并且:
+配置的时间点在当前时间之后,则设备将在当天的该时间点重启;
+配置的时间点在当前时间之前,则设备将在第二天的该时间点重启。
+多次配置scheduler reboot at、scheduler reboot delay命令,最后一次执行的命令生效。
+# 假设系统的当前时间为2015年6月6日11:43,配置设备在当天中午12:00重启。
+scheduler reboot delay命令用来配置重启设备的延迟时间。
+未配置重启设备的延迟时间。
+time:设备重启的等待时延,格式为HH:MM(小时:分钟)或MM(分钟)。
+使用HH:MM格式时,MM的取值范围为0~59,HH:MM的最大长度为6个字符。
+使用MM格式时,最大长度为6个字符。
+# 假设系统的当前时间为2015年6月6日11:48,配置设备在88分钟后重启。
+scheduler schedule命令用来创建Schedule,并进入相应的Schedule视图。
+如果指定的Schedule已存在,则直接进入Schedule视图。
+undo scheduler schedule命令用来删除指定Schedule。
+不存在Schedule。
+使用scheduler schedule命令可以配置定时执行任务,让设备在指定时间执行指定命令。
+配置步骤如下:
+使用scheduler job命令创建Job。
+在Job视图下,使用command命令配置需要执行的命令。
+使用scheduler schedule命令创建Schedule。
+在Schedule视图下,使用job命令为Schedule分配Job。
+一个Schedule下可以分配多个Job,但必须是已创建的Job,否则分配失败。
+在Schedule视图下,使用user-role命令为Schedule配置用户角色。
+一个Schedule下最多可以分配64个角色。
+在Schedule视图下,使用time at、time once或者time repeating命令来配置任务执行的时间。
+一个Schedule下只能配置一个执行时间。
+# 创建名为saveconfig的Schedule。
+shutdown-interval命令用来配置端口状态检测定时器的时长。
+undo shutdown-interval命令用来恢复缺省情况。
+端口状态检测定时器的时长为30秒。
+interval:端口状态检测定时器的时长,取值范围为0~300,单位为秒。
+取值为0时,表示不进行定时检测。
+某些协议模块在特定情况下会自动关闭某个端口,比如当开启了BPDU保护功能的端口收到配置消息时,MSTP协议模块将自动关闭该端口。
+同时,系统会启动一个检测定时器,如果直到定时器超时(即经过time秒之后),该端口仍处于关闭状态,协议模块则自动激活该端口,令其恢复到真实的物理状态。
+如果用户在端口定时检测过程中将检测时间间隔修改为T1,修改时刻距协议关闭端口时间间隔为T。
+若T<T1,则被关闭的端口会再经过T1-T时间后被恢复。
+若T>=T1,则被关闭的端口会立即恢复。
+例如当前time配置为30,当端口被协议模块关闭2秒(T=2)后,修改time为10(T1=10),则该接口会再经过8秒后被恢复;如果当前time为30,端口被协议模块关闭10秒后,修改time为2,则该端口会立即恢复。
+# 配置端口状态检测定时器的时长为100秒。
+sysname命令用来配置设备的名称。
+undo sysname用来恢复缺省情况。
+设备的名称为H3C。
+sysname:设备名称,为1~64个字符的字符串。
+设备的名称对应于命令行接口的提示符,如设备的名称为Sysname,则用户视图的提示符为<Sysname>。
+# 配置设备的名称为R2000。
+system-working-mode命令用来配置设备的工作模式。
+undo system-working-mode命令用来恢复缺省情况。
+设备工作在标准模式。
+standard:将设备的工作模式配置为标准模式。
+advance:将设备的工作模式配置为高级模式。
+expert:将设备的工作模式配置为专家模式。
+不同模式下设备支持的特性不同,详细描述请参见“基础配置指导”中的“设备管理”。
+要使修改的工作模式生效,必须重启设备。
+# 将设备工作模式配置为高级模式。
+temperature-limit命令用于配置设备的温度告警门限。
+undo temperature-limit命令用来恢复缺省情况。
+不同温度传感器的温度门限可能不同,请先使用undo temperature-limit命令恢复缺省情况后,再通过display environment命令查看设备的缺省温度告警门限。
+slot slot-number:配置指定成员设备上温度传感器的温度门限。
+hotspot:配置热点传感器的温度门限。
+热点传感器一般置于发热量较大的芯片附近,监测芯片温度。
+sensor-number:温度传感器的编号,输入该参数的值时可通过输入?,来获取该参数的取值范围。
+lowlimit:低温告警门限,单位为摄氏度。
+不同温度传感器的低温告警门限取值范围不同,输入该参数的值时可通过输入?,来获取该参数的取值范围。
+warninglimit:一般级高温告警门限,单位为摄氏度,必须大于低温告警门限。
+alarmlimit:严重级高温告警门限,单位为摄氏度,必须大于一般级高温告警门限。
+如果温度低于低温告警门限、高于一般级或严重级高温门限,系统均会生成相应的日志信息和告警信息提示用户,并通过设备面板上的指示灯来告警,以便用户及时进行处理。
+# 配置指定slot上热点1号温度传感器,低温门限为-10摄氏度,一般级高温门限为50摄氏度,严重级高温门限为60摄氏度。
+time at命令用来配置在指定时刻执行Schedule。
+undo time命令用来为Schedule取消执行时间配置。
+未为Schedule配置执行时间。
+time:Schedule的执行时间,格式为HH:MM(小时:分钟)。
+HH取值范围为0~23,MM取值范围为0~59。
+date:Schedule执行的日期,格式为MM/DD/YYYY(月/日/年)或者YYYY/MM/DD(年/月/日)。
+配置的时间点必须晚于系统当前时间点,否则配置失败。
+一个Schedule只能配置一个执行时间。
+因此,同一Schedule视图下,多次执行time at、time once或time repeating命令时,最后一次执行的命令生效。
+# 配置2015年5月11日1点1分执行名称为saveconfig的Schedule。
+time once命令用来为Schedule配置执行时间。
+at time:Schedule的执行时间,格式为HH:MM(小时:分钟)。
+month-date month-day:Schedule在一个月中的哪天被执行。
+month-day表示日期,取值范围为1~31。
+如果指定了一个本月不存在的日期,则实际生效的时间为下一个月的该日期,比如,二月没有30号,则实际生效的时间为三月的30号。
+week-day week-day&<1-7>:Schedule在一周中的哪(些)天被执行。
+week-day&<1-7>表示一周中任一天或几天的组合,week-day取值为:Mon、Tue、Wed、Thu、Fri、Sat、Sun,&<1-7>表示前面的参数最多可以输入7次。
+配置多天时,字符串之间用空格分开。
+delay time:指定Schedule延迟执行的时间。
+格式为HH:MM(小时:分钟)或MM(分钟)。
+使用HH:MM格式时,MM的取值范围为0~59,HH:MM最大长度为6个字符。
+配置该命令后,Schedule在该设定时间点到达时执行,若当天/本月/本周该时间点已过去,则顺延到第二天/下月/下周。
+执行后下次再到达该时间点时Schedule不再执行。
+# 当天的15点执行名称为saveconfig的Schedule。
+# 最近到达的15号的15点执行名称为saveconfig的Schedule。
+# 最近一个周一和周五的12点整执行名称为saveconfig的Schedule。
+# 延迟10分钟执行名称为saveconfig的Schedule。
+time repeating命令用来配置重复执行Schedule的时间。
+未配置重复执行Schedule的时间。
+at time:表示重复执行的时间,格式为HH:MM(小时:分钟)。
+不指定该参数时,表示从现在开始。
+date:指定Schedule重复执行的开始日期,格式为MM/DD/YYYY(月/日/年)或者YYYY/MM/DD(年/月/日)。
+不指定该参数时,表示将来第一次到达time的时间点的日期。
+interval interval:指定重复执行的时间间隔。
+使用HH:MM格式时,MM的取值范围为0~59,最大长度为6个字符。
+使用MM格式时,取值的最小值为1,最大长度为6个字符。
+month-date [ month-day | last ]:表示每月中的某一天。
+其中,month-day表示日期,取值范围为1~31。
+last表示每月的最后一天。
+week-day week-day&<1-7>:表示每周中的某(些)天。
+time repeating [ at time [ date ] ] interval interval表示从指定时间开始,周期性执行Schedule。
+time repeating at time [ month-date [ month-day | last ] | week-day week-day&<1-7> ]表示每月/每周的某(些)天重复执行Schedule。
+# 配置从早上八点开始,每隔1小时执行一次名称为saveconfig的Schedule。
+# 配置从现在开始每天的12:00执行名称为saveconfig的Schedule。
+# 配置从现在开始每个月5号的上午8点执行名称为saveconfig的Schedule。
+# 配置从现在开始每个月的最后一天8点执行名称为saveconfig的Schedule。
+# 配置从现在开始每个周五和周六的上午8点执行名称为saveconfig的Schedule。
+usb disable命令用来关闭USB接口。
+undo usb disable命令用来开启USB接口。
+设备上所有的USB接口处于开启状态。
+用户可通过USB口进行文件的上传和下载。
+缺省状态下USB口处于开启状态,用户可根据需要关闭USB口。
+在执行usb disable命令前,请先使用umount命令卸载所有USB分区,否则命令执行失败。
+有关umount命令的详细介绍,请参见“基础配置命令参考”中的“文件系统管理”。
+# 打开USB接口。
+user-role命令用来配置执行Schedule时使用的用户角色。
+undo user-role命令用来将已经配置的用户角色从Schedule中删除。
+执行Schedule时使用的用户角色,为创建该Schedule的用户的用户角色。
+role-name:用户角色的名称,为1~63个字符的字符串,区分大小写。
+可以是系统预定义的角色名称,包括network-admin、network-operator、level-0~level-15,也可以是自定义的用户角色名称。
+设备支持的每条命令执行时都需要相应的用户角色。
+只有本命令中配置的用户角色具有权限,Schedule中的command命令中指定的命令行才能执行。
+关于用户角色的详细描述请参见“基础配置指导”中的“RBAC”。
+同一Schedule最多可配置64个用户角色,超过该上限后,新配置会执行失败。
+# 配置执行定时任务test时使用的用户角色为rolename。
+字段
+描述
+产生告警的slot,显示为“-”,表示产生告警的元件位于机框上
+告警CPU的编号
+告警的级别,级别由高到低依次为ERROR、WARNING、NOTICE、INFO
+告警的详细信息。
+取值为:
+faulty:表示该slot处于faulty状态(该slot可能正在启动,或者当前处于故障状态)
+Fan n is absent:风扇n当前不在位
+Power n is absent:电源n当前不在位
+Power n is faulty:电源n处于异常状态
+The temperature of sensor n exceeds the lower limit:传感器n的温度低于低温门限
+The temperature of sensor n exceeds the upper limit:传感器n的温度高于高温门限
+设备启动后,会以5秒为周期计算并记录一次该5秒内的CPU或CPU核的平均利用率。
+该字段显示的是最近一个5秒统计周期内CPU或CPU核的平均利用率
+设备启动后,会以1分钟为周期计算并记录一次该1分钟内的CPU或CPU核的平均利用率。
+该字段显示的是最近一个1分钟统计周期内CPU或CPU核的平均利用率
+设备启动后,会以5分钟为周期计算并记录一次该5分钟内的CPU或CPU核的平均利用率。
+该字段显示的是最近一个5分钟统计周期内CPU或CPU核的平均利用率
+设备类型
+设备在IRF中的角色,取值为:
+Master:表示IRF中的主设备
+Standby:表示IRF中的从设备
+设备上运行的软件版本
+设备上运行的补丁版本。
+None表示设备上没有安装补丁
+系统温度信息,单位为摄氏度
+温度传感器
+hotspot:表示热点温度传感器
+当显示数字时表示指定slot上温度传感器的温度信息
+当前温度
+低温告警门限。
+当显示为NA时,表示不支持该门限
+一般级(Warning)高温告警门限。
+严重级(Alarm)高温告警门限。
+关断级(Shutdown)高温告警门限,当温度传感器的温度大于该门限时,设备会自动关闭。
+设备的成员编号
+设备上风扇的编号
+风扇状态:
+Absent:风扇不在位
+Normal:风扇正常工作
+Fault:风扇故障
+FanDirectionFault:用户期望的风道方向与风扇框的实际风道方向不一致
+风扇模块的实际风道方向:
+Port-to-power:风扇从端口侧向电源侧抽风,即风向从前向后
+Power-to-port:风扇从电源侧向端口侧吹风,即风向从后向前
+用户期望的风扇模块的风道方向:
+MAC地址表、ARP表/ND表、路由表的硬件资源模式,取值包括:0、1、2、3、4,模式不同,MAC地址表、ARP表/ND表、路由表的容量不同。
+关于不同模式下表容量的详细介绍请参见“基础配置指导”中的“设备管理”
+MAC地址表、ARP表/ND表、路由表的缺省硬件资源模式
+MAC地址表、ARP表/ND表、路由表的当前硬件资源模式
+最新配置的MAC地址表、ARP表/ND表、路由表的硬件资源模式
+系统内存使用情况,以下统计信息均以KB为单位
+内存使用信息
+系统可分配的物理内存的大小
+设备总物理内存分为不可分配物理内存和可分配物理内存。
+其中,不可分配物理内存用于内核代码段存储、内核管理开销以及ISSU功能运行等;可分配物理内存用于支撑业务模块的运行、文件存储等操作。
+不可分配内存的大小由设备根据系统运行需要自动计算划分,可分配物理内存的大小等于设备总物理内存减去不可分配内存的大小
+整个系统已用的物理内存大小
+整个系统可用的物理内存大小
+多个进程共享的物理内存总额
+已使用的文件缓冲区的大小
+高速缓冲寄存器已使用的内存大小
+整个系统物理内存的空闲率
+-/+ Buffers/Cache:used = Mem:Used – Mem:Buffers – Mem:Cached,表示应用程序已用的物理内存大小
+-/+ Buffers/Cache:free = Mem:Free + Mem:Buffers + Mem:Cached,表示应用程序可用的物理内存大小
+交换分区的使用信息
+内存利用率阈值
+剩余内存门限阈值:
+Minor:一级告警门限,单位为MB
+Severe:二级告警门限,单位为MB
+Critical:三级告警门限,单位为MB
+Normal:恢复到正常状态的阈值,单位为MB
+系统当前内存使用状态:
+Normal:正常状态
+Minor:一级告警门限状态
+Severe:二级告警门限状态
+Critical:三级告警门限状态
+门限事件统计信息,事件分为:
+Back to normal state:内存恢复到正常状态
+Enter minor low-memory state:进入一级告警门限状态
+Back to minor low-memory state:恢复到一级告警门限状态
+Enter severe low-memory state:进入二级告警门限状态
+Back to severe low-memory state:恢复到二级告警门限状态
+Enter critical low-memory state:进入三级告警门限状态
+事件第一次发生的时间,格式yyyy-mm-dd hh:mm:ss.msec
+事件最近一次发生的时间,格式yyyy-mm-dd hh:mm:ss.msec
+事件发生的总次数
+设备在IRF中的成员编号
+设备的功率
+设备上的电源模块编号
+电源模块的状态
+Absent:电源不在位
+Normal:电源正常工作
+Fault:电源故障
+电源模块的交直流方式
+AC:交流电源
+DC:直流电源
+电源输出电流,以安为单位,显示为“--”表示设备暂不支持
+电源输出电压,以伏为单位,显示为“--”表示设备暂不支持
+电源输出功率,以瓦为单位,显示为“--”表示设备暂不支持
+电源模块内风扇吹风方向,不显示该字段表示设备暂不支持
+Schedule日志文件的大小,单位为字节
+Job的名称
+Schedule的名称
+开始执行Job的时间
+Job执行结束的时间(没有调度的或者没有分配命令的Job,均不会显示该信息)
+Job中的命令执行时的输出信息
+Schedule的执行时间配置。
+如果没有为Schedule配置执行时间,则不会显示该信息
+Schedule第一次开始执行的时间。
+Schedule上一开始执行的时间
+如果还没有执行,则显示Yet to be executed
+Schedule上一次执行完成的时间。
+Schedule已经执行的次数。
+如果Schedule还没有执行,则不会显示该信息
+Schedule下关联的Job的名称
+Job上一次被执行的状态(Job下分配的命令是否执行以及执行结果,请通过display scheduler logfile命令查看)
+Successful:表示执行成功
+Failed:表示执行失败
+Waiting:表示正在等待被执行
+In process:表示正在执行
+-NA-:表示还没有到执行时间
+系统状态:
+Stable:稳定运行
+Not ready:未稳定,此时不能进行ISSU升级
+主备状态:
+Stable:主备状态稳定,可以倒换
+No redundance:系统无冗余,不能倒换
+Not ready:未稳定,不可以倒换
+成员设备在系统中的身份:
+Active:主设备
+Standby:备设备,提供冗余备份
+成员设备状态:
+Stable:成员设备稳定运行
+Board inserted:成员设备加入
+Kernel initiating:成员设备内核初始化
+Service starting:成员设备上的服务正在启动
+Service stopping:成员设备上的服务正在关闭
+HA Batch backup:HA批量备份中
+Interface data batch backup:接口管理批量备份未完成
+当前对象处于未稳定状态
+接收信号丢失
+接收光功率高
+接收光功率低
+发送错误
+偏置电流高
+偏置电流低
+发送光功率高
+发送光功率低
+温度高
+温度低
+电压高
+电压低
+模块信息读写错误
+模块信息校验和错误
+模块类型和端口配置不匹配
+端口不支持该模块类型
+通道x接收到的信号丢失
+通道x发送报文时出错
+通道x发送的信号丢失
+通道x接收到的光的功率太高
+通道x接收到的光的功率太低
+通道x的偏置电流高
+通道x的偏置电流低
+模块读写错误
+端口不支持该类型的模块
+接口光模块当前故障告警信息
+接收光功率低告警
+接口插入的光模块的数字诊断信息
+当前的诊断参数
+数字诊断参数——温度,单位为°C,精确到1°C
+数字诊断参数——电压,单位为V,精确到0.01V
+数字诊断参数——偏置电流,单位为mA,精确到0.01mA
+数字诊断参数——接收光功率,单位为dBm,精确到0.01dBm
+数字诊断参数——发送光功率,单位为dBm,精确到0.01dBm
+告警门限
+高告警门限
+低告警门限
+最近的第n次更新的时间,Record 1为最新的一次更新
+软件包的名称。
+带*符号,表示软件包的版本和升级前的版本有变化;不带*符号,表示版本没有变化
+软件包的版本号
+版本编译时间

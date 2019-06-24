@@ -1,0 +1,181 @@
+目  录
+CLI命令
+alias命令用来为命令或命令字符串配置别名。
+undo alias命令用来取消相应配置。
+命令
+缺省情况
+系统为部分常用命令定义了缺省别名,如表1-1所示。
+系统定义的缺省别名
+视图
+系统视图
+缺省用户角色
+参数
+alias:表示命令的别名,为1~20个字符的字符串,区分大小写。
+别名不能为“alias”,也不能包含空格。
+command:表示配置别名的命令,可以为任意字符串。
+请用户保证该命令字符串能够被设备识别并执行,否则执行别名命令时将会失败。
+使用指导
+系统定义的缺省别名无法取消。
+通过本命令用户可以为命令行指定一个或多个别名,也可以为命令行开头的一个或多个关键字配置多个别名,使其符合用户的使用习惯。
+本命令可以为某条命令行配置别名,当执行该命令时可以直接使用别名以简化输入。
+例如将命令display ip routing-table的别名配置为shiprt,当需要使用display ip routing-table查看设备生效的配置时,直接输入shiprt即可。
+本命令可以为命令行起始的一个或多个关键字配置别名,使其更符合用户习惯。
+所有使用该关键字开头的命令行都可以使用别名命令来执行。
+例如,为display ip命令定义的别名为ship,在使用所有以display ip关键字开头的命令行时,都可以使用ship进行配置。
+例如:
+输入ship routing-table可以执行命令display ip routing-table。
+输入ship interface可以执行命令display ip interface。
+配置别名时,可以使用$n表示命令行中的参数或者关键字,这样既可以用别名替代部分关键字来简化输入,又可以根据实际需要指定不同的参数或者关键字,增加了灵活性。
+$n最多可以使用9次,n为1~9的整数,表示参数或关键字出现的顺序。
+比如,将命令display ip $1 | include $2的别名配置为shinc后,如果需要执行display ip routing-table | include Static命令来筛选并查看路由表中的所有静态路由信息,可直接执行shinc routing-table Static;同样如果需要执行display ip interface | include Ten-GigabitEthernet1/0/1,则可直接执行shinc interface Ten-GigabitEthernet1/0/1。
+举例
+# 配置命令display ip routing-table的别名为shiprt。
+# 配置命令display ip $1 | include $2的别名为shinc,同时使用别名命令筛选并查看路由表中的所有静态路由信息。
+相关命令
+display | { begin | exclude | include }命令用来使用正则表达式对显示信息进行过滤。
+任意视图
+command:命令关键字,取值可以通过输入?来获得。
+begin:从包含正则表达式的行开始显示。
+exclude:只显示不包含正则表达式的行。
+include:只显示包含正则表达式的行。
+regular-expression:表示正则表达式,为1~256个字符的字符串,区分大小写。
+用display命令查看显示信息时,用户可以使用正则表达式来过滤显示信息,以便快速的找到自己关注的信息。
+关于正则表达式的详细描述请参考“基础配置指导”中的“CLI”。
+# 查看包含VLAN的配置。
+display | by-linenum命令用来查看带行号的显示信息。
+使用本命令时,系统在显示信息的同时会自动在每行显示信息的前面添加行号,以便当显示信息较多时,能够迅速定位到某行信息。
+行号占5个字符,通常行号后面接“:”。
+当by-linenum和begin参数一起使用时,行号后面还可能接“-”,其中“:”表示该行符合匹配规则,“-”表示该行不符合匹配规则。
+# 显示VLAN 999信息的同时显示行号。
+# 查看当前配置,从包含“user-group”字符串的行开始到最后一行配置信息,并同时显示行号。
+(行号后为“:”表示该行包含“user-group”字符串,行号后为“-”表示该行不包含“user-group”字符串。
+display >命令用来将显示信息独立保存到文件。
+filename:文件名称,为1~63个字符的字符串。
+display命令显示的内容通常是统计信息、功能是否使能以及功能的相关参数配置,这些信息在设备运行过程中会随着时间或者用户的配置而改变。
+使用本命令可以将当前显示信息保存到文件,可供用户随时比对和查看。
+执行本命令时,如果filename不存在,系统会先创建该文件,再保存;如果filename已存在,则会覆盖原文件的内容。
+# 将display vlan 1的显示信息保存到文件vlan.txt。
+查看vlan.txt的内容,验证display >命令的执行效果。
+display >>命令用来将显示信息以追加方式保存到文件。
+执行本命令时,如果filename不存在,系统会先创建该文件,再保存。
+如果filename已存在,则新保存的内容会追加到文件filename的尾部。
+# 将display vlan 999的显示信息以追加方式保存到文件vlan.txt。
+查看vlan.txt的内容,验证display >>命令的执行效果。
+display alias命令用来查看命令别名的相关配置。
+alias:表示配置的命令别名。
+不指定该参数,则显示所有的已配置的命令别名。
+# 查看系统中配置的所有命令别名。
+# 查看别名命令shinc表示的命令字符串。
+display alias命令显示信息描述表
+display history-command命令用来显示当前登录用户历史命令缓冲区中的命令。
+用户登录设备后,系统会给每个用户自动分配一个历史命令缓冲区,用于存放用户本次登录成功执行的命令行,以便用户查看和调用。
+历史命令缓存区有大小限制,缺省保存10条命令,用户也可以通过history-command max-size命令来修改大小。
+当数目达到上限时,系统会自动删除最早的记录,来保存最新成功执行的命令。
+如果用户退出登录,系统会自动清除该历史命令缓存区的所有记录。
+# 显示历史命令缓存区内保存的命令。
+history-command max-size(基础配置命令参考/登录设备)
+display history-command all命令用来显示所有登录用户历史命令缓冲区中的命令。
+系统中有一个共享历史命令缓冲区,用于存放所有登录用户成功执行的命令行,以便用户查看(不能调用)。
+历史命令缓存区的大小固定为1024条,不可配置。
+即便用户退出登录,系统也不会清除共享历史命令缓存区中该用户的历史命令记录。
+# 显示所有登录用户成功执行的历史命令。
+display history-command all命令显示信息描述表
+display hotkey命令用来显示系统支持的快捷键及其含义。
+# 显示系统支持的快捷键及其含义。
+display hotkey命令显示信息描述表
+关于各快捷键绑定的功能或命令的详细介绍请参见表1-5。
+hotkey命令用来修改快捷键的绑定关系。
+undo hotkey命令用来恢复缺省情况。
+设备支持29个快捷键,各快捷键的缺省绑定关系如表1-5所示。
+快捷键的缺省绑定关系
+hotkey:需要绑定的快捷键。
+必须为设备支持的快捷键,取值请参见表1-5,或执行hotkey ?命令,帮助出该参数的取值。
+command:快捷键绑定的命令行。
+必须为设备上可成功执行的命令行。
+function:快捷键绑定的功能。
+执行hotkey hotkey function ?命令,可以帮助出该参数的取值,关于各值的含义请参见表1-5。
+none:取消指定快捷键的绑定关系。
+配置该参数后,该快捷键将不绑定任何命令和功能。
+为方便用户快捷操作设备,设备支持29个快捷键。
+用户按下快捷键后,设备会立即执行对应的命令行或者功能。
+如果这些快捷键和用户登录终端定义的快捷键冲突,或者不符合用户的使用习惯,用户可使用该命令重新定义快捷键,甚至取消快捷键的绑定关系。
+一个快捷键对应一个命令或功能,如果使用本命令多次定义同一快捷键,则最新配置生效。
+如果多次使用本命令将多个快捷键和同一命令、功能绑定,则这些绑定的快捷键均生效。
+当用户使用终端软件与设备进行交互时,如果终端软件定义快捷键(包括用户可定义和系统定义快捷键),则快捷键会遵从终端软件的定义。
+# 将快捷键<Ctrl+T>和命令display tcp statistics绑定。
+# 将快捷键<Ctrl+U>和功能“将光标移动到当前行的开头”绑定。
+# 取消快捷键<Ctrl+A>的绑定关系。
+quit命令用来使用户从当前视图退回到上一层视图。
+如果当前是用户视图,执行quit后,会断开当前连接,退出系统。
+# 从接口Ten-GigabitEthernet1/0/1视图退回到系统视图,再退回到用户视图。
+repeat命令用来重复执行历史记录命令。
+number:表示重复执行历史命令的条数,取值范围为1~10,缺省值为1。
+count times:表示重复执行历史命令的次数,取值范围为0~4294967295,缺省值为0。
+如不指定该参数,则历史命令一直重复执行,直到执行用户线视图下设置的终止当前运行任务的快捷键才能停止执行该命令,默认的终止快捷键为<Ctrl+C>。
+关于终止当前执行任务的快捷键的设置,请参见“基础配置命令”中的“登录设备”。
+delay seconds:表示重复执行历史命令的时间间隔,取值范围为0~4294967295,单位为秒,缺省值为1。
+重复执行历史命令时,系统将按照历史命令的下发顺序执行。
+例如,用户在某视图下依次执行命令a、b和c后,再执行repeat 3命令,则系统将按照a、b和c的顺序重复执行。
+如果用户重复执行的历史命令中存在交互式命令,需要用户手动处理此交互式命令,直到交互式命令执行结束,历史命令才会继续被重复执行。
+# 重复执行最近2条历史命令display cpu和display clock,重复执行3次,时间间隔10秒。
+escape-key(基础配置命令参考/登录设备)
+return命令用来从当前视图(非用户视图)直接退回到用户视图。
+除用户视图外的任意视图
+用户也可以使用组合键<Ctrl+Z>从当前视图(非用户视图)直接退回到用户视图,效果等同于执行return命令。
+# 从接口Ten-GigabitEthernet1/0/1视图退回到用户视图。
+screen-length disable命令用来关闭当前用户的分屏显示功能。
+undo screen-length disable命令用来开启当前用户的分屏显示功能。
+用户登录后将遵循用户线下的screen-length设置。
+screen-length设置的缺省情况为:允许分屏显示,下一屏显示24行数据。
+用户视图
+分屏显示功能处于关闭状态时,会一次显示所有信息,如果信息较多,则会连续刷屏,不方便立即查看。
+该配置只对当前用户本次登录有效,用户重新登录后将恢复到缺省情况。
+# 关闭当前用户的分屏显示功能。
+screen-length (基础配置命令参考/登录设备)
+system-view命令用来从用户视图进入系统视图。
+# 从用户视图进入系统视图。
+缺省别名
+字段
+描述
+索引号
+别名
+命令字符串
+执行命令行的日期
+执行命令行的时间
+执行命令的用户使用的登录用户线
+执行命令的用户使用的登录IP
+如果用户使用scheme方式登录设备,该字段显示为执行命令的用户使用的登录用户名;如果使用其他方式登录设备,该字段显示为**
+执行的命令(和用户的输入保持一致)
+已定义的绑定功能的快捷键
+已定义的绑定命令的快捷键
+未定义的快捷键
+快捷键
+缺省绑定的功能或命令
+move_the_cursor_to_the_beginning_of_the_line,表示将光标移动到当前行的开头
+move_the_cursor_one_character_to_the_left,表示将光标向左移动一个字符
+stop_the_current_command,表示停止当前正在执行的功能
+erase_the_character_at_the_cursor,表示删除当前光标所在位置的字符
+move_the_cursor_to_the_end_of_the_line,表示将光标移动到当前行的末尾
+move_the_cursor_one_character_to_the_right,表示将光标向右移动一个字符
+display current-configuration,表示显示当前配置
+erase_the_character_to_the_left_of_the_cursor,表示删除光标左侧的一个字符
+abort_the_connection_request,表示终止呼出的连接
+display ip routing-table,表示显示IPv4路由表信息
+display_the_next_command_in_the_history_buffer,表示显示历史缓冲区中的下一条命令
+undo debugging all,表示关闭所有功能项的调试开关
+display_the_previous_command_in_the_history_buffer,表示显示历史缓冲区中的上一条命令
+redisplay_the_current_line,表示重新显示当前行信息
+未绑定任何命令行或功能
+paste_text_from_the_clipboard,表示粘贴剪贴板的内容
+delete_the_word_to_the_left_of_the_cursor,表示删除光标左侧连续字符串内的所有字符
+delete_all_characters_from_the_beginning_of_the_line_to_the_cursor,表示删除光标左侧所有的字符
+delete_all_characters_from_the_cursor_to_the_end_of_the_line,表示删除光标所在位置及其右侧所有的字符
+return_to_the_User_View,表示退回到用户视图
+kill_incoming_connection_or_redirect_connection,表示终止当前连接
+move_the_cursor_back_one_word,表示将光标移动到左侧连续字符串的首字符处
+delete_all_characters_from_the_cursor_to_the_end_of_the_word,表示删除光标所在位置及其右侧连续字符串内的所有字符
+move_the_cursor_forward_one_word,表示将光标向右移到下一个连续字符串之前
+move_the_cursor_down_a_line,表示将光标向下移动一行(输入回车前有效)
+move_the_cursor_up_a_line,表示将光标向上移动一行(输入回车前有效)
+move_the_cursor_to_the_beginning_of_the_clipboard,表示将光标所在位置指定为剪贴板的开始位置
+move_the_cursor_to_the_end_of_the_clipboard,表示将光标所在位置指定为剪贴板的结束位置

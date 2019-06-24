@@ -1,0 +1,181 @@
+table of Contents
+CLI command
+The alias command is used to configure an alias for a command or command string.
+Use the undo alias command to cancel the configuration.
+command
+Default
+The system defines default aliases for some commonly used commands, as shown in Table 1-1.
+System-defined default alias
+view
+System view
+Default user role
+parameter
+Alias: Indicates the alias of the command, which is a case-sensitive string of 1 to 20 characters.
+Aliases cannot be "alias" and cannot contain spaces.
+Command: Command to configure an alias, which can be any string.
+Please ensure that the command string can be recognized and executed by the device, otherwise it will fail when executing the alias command.
+User guides
+The system-defined default alias cannot be canceled.
+With this command, you can specify one or more aliases for the command line, or you can configure multiple aliases for one or more keywords at the beginning of the command line to match the user's usage habits.
+This command can be used to configure an alias for a command line. When the command is executed, the alias can be used directly to simplify the input.
+For example, if the display ip routing-table command is used as the shiprt, you can use the display ip routing-table command to check the configuration of the device.
+This command can be used to configure an alias for one or more keywords at the beginning of the command line to make it more user-friendly.
+All command lines that start with this keyword can be executed using the alias command.
+For example, the alias defined for the display ip command is ship, and you can use ship to configure it when you use all the command lines that start with the display ip keyword.
+E.g:
+Run the display ip routing-table command to enter the ship routing-table.
+Run the display ip interface command to enter the ship interface.
+When configuring an alias, you can use $n to indicate the parameters or keywords in the command line. This can replace the partial keywords with aliases to simplify the input, and you can specify different parameters or keywords according to actual needs, which increases flexibility.
+$n can be used up to 9 times, n is an integer from 1 to 9, indicating the order in which parameters or keywords appear.
+For example, if the display ip $1 | include $2 alias is configured as shinc, you can run the display ip routing-table | include static command to filter and view all static routes in the routing table. If you need to run the display ip interface | include Ten-GigabitEthernet 1/0/1, you can run the shinc interface Ten-GigabitEthernet 1/0/1.
+Example
+# Configure the display ip routing-table alias as shiprt.
+# Configure the display ip $1 | include $2 alias as shinc, and use the alias command to filter and view all static routing information in the routing table.
+Related commands
+The display | { begin | exclude | include } command displays the displayed information using regular expressions.
+Arbitrary view
+Command: Command keyword. The value can be obtained by inputting ?.
+Begin: Displayed from the line containing the regular expression.
+Exclude: Displays only the lines that do not contain regular expressions.
+Include: Displays only the lines that contain regular expressions.
+Regular-expression: A regular expression that is a case-sensitive string of 1 to 256 characters.
+When you use the display command to view the displayed information, you can use regular expressions to filter the displayed information so that you can quickly find the information you are interested in.
+For a detailed description of regular expressions, please refer to "CLI" in the "Basic Configuration Guide".
+# View the configuration of the VLAN.
+Use the display-by-linenum command to display the display information with line numbers.
+When using this command, the system will automatically add a line number in front of each line of display information while displaying the information, so that when there is more information, you can quickly locate a line of information.
+The line number is 5 characters, usually followed by ":".
+When by-linenum is used with the begin parameter, the line number may be followed by a "-", where ":" indicates that the line conforms to the matching rule, and "-" indicates that the line does not match the matching rule.
+# Display the line number of the VLAN 999 information.
+# View the current configuration, starting from the line containing the "user-group" string to the last line of configuration information, and display the line number at the same time.
+(A line after the line number means ":" means that the line contains the string "user-group", and a line number followed by "-" means that the line does not contain the string "user-group".
+Use the display > command to save the displayed information to a file.
+Filename: Name of the file, a string of 1 to 63 characters.
+The display command displays the statistics, functions, and related parameters. The information changes over time or user configuration.
+Use this command to save the current display information to a file for users to compare and view at any time.
+When this command is executed, if the filename does not exist, the system will create the file first and then save it; if the filename already exists, it will overwrite the contents of the original file.
+# Save the display information of display vlan 1 to the file vlan.txt.
+Check the contents of vlan.txt and verify the execution of the display > command.
+The display >> command is used to save the displayed information to a file in an append manner.
+When this command is executed, if the filename does not exist, the system will create the file first and then save it.
+If filename already exists, the newly saved content is appended to the end of the file filename.
+# Save the display information of display vlan 999 to the file vlan.txt in the append mode.
+Check the contents of vlan.txt and verify the execution of the display >> command.
+Use the display alias command to view the configuration of a command alias.
+Alias: indicates the configured command alias.
+If this parameter is not specified, all configured command aliases are displayed.
+# View all command aliases configured in the system.
+# View the command string represented by the alias command shinc.
+Display alias command output description
+Use the display history-command command to display the commands in the current command user history buffer.
+After the user logs in to the device, the system automatically allocates a history command buffer to each user to store the command line successfully executed by the user for the user to view and invoke.
+The history command cache area has a size limit. By default, 10 commands are saved. You can also modify the size by using the history-command max-size command.
+When the number reaches the upper limit, the system automatically deletes the oldest record to save the latest successfully executed command.
+If the user logs out, the system automatically clears all records in the history command cache.
+# Display the commands saved in the history command cache area.
+History-command max-size (Basic Configuration Command Reference/Login Device)
+Use the display history-command all command to display the commands in the history command buffer of all login users.
+There is a shared history command buffer in the system, which is used to store the command line successfully executed by all logged-in users for the user to view (cannot be called).
+The size of the history command buffer is fixed at 1024 and is not configurable.
+Even if the user logs out, the system does not clear the history command record of the user in the shared history command cache.
+# Display the history commands successfully executed by all logged in users.
+Display history-command all command output description
+Use the display hotkey command to display the shortcut keys supported by the system and their meanings.
+# Display the shortcut keys supported by the system and their meanings.
+Display hotkey command output description
+For details on the functions or commands for binding each shortcut key, see Table 1-5.
+The hotkey command is used to modify the binding relationship of shortcut keys.
+Use the undo hotkey command to restore the default.
+The device supports 29 shortcut keys. The default binding relationship of each shortcut key is shown in Table 1-5.
+Default binding relationship of shortcut keys
+Hotkey: A shortcut key that needs to be bound.
+It must be a shortcut key supported by the device. For the value, see Table 1-5, or execute the hotkey command to help the value of this parameter.
+Command: The command line to which the shortcut key is bound.
+Must be a command line that can be successfully executed on the device.
+Function: The function of the shortcut key binding.
+Run the hotkey hotkey function command to help the value of this parameter. For the meaning of each value, see Table 1-5.
+None: Cancels the binding relationship of the specified shortcut key.
+When this parameter is configured, the shortcut will not bind any commands and functions.
+In order to facilitate the user to operate the device quickly, the device supports 29 shortcut keys.
+After the user presses the shortcut key, the device will immediately execute the corresponding command line or function.
+If these shortcut keys conflict with the shortcut keys defined by the user login terminal, or do not meet the user's usage habits, the user can use this command to redefine the shortcut keys and even cancel the binding relationship of the shortcut keys.
+A shortcut key corresponds to a command or function. If you use this command to define the same shortcut key multiple times, the latest configuration takes effect.
+If you use this command multiple times to bind multiple shortcut keys to the same command and function, the shortcut keys of these bindings will take effect.
+When the user interacts with the device using the terminal software, if the terminal software defines shortcut keys (including user definable and system-defined shortcut keys), the shortcut keys follow the definition of the terminal software.
+# Bind the shortcut key <Ctrl+T> to the display tcp statistics command.
+# Bind the shortcut <Ctrl+U> and the function "Move the cursor to the beginning of the current line".
+# Cancel the binding relationship of the shortcut key <Ctrl+A>.
+Use the quit command to return the user to the previous view from the current view.
+If the current view is user view, after the quit is executed, the current connection will be disconnected and the system will be logged out.
+# Return to the system view from the view of the Ten-GigabitEthernet 1/0/1 interface and return to the user view.
+The repeat command is used to repeat the history command.
+Number: Specifies the number of times that the history command is executed repeatedly. The value ranges from 1 to 10. The default value is 1.
+Count times: Specifies the number of times the history command is executed repeatedly. The value ranges from 0 to 4294967295. The default value is 0.
+If you do not specify this parameter, the history command will be executed repeatedly until you execute the shortcut key that terminates the current running task set in the user line view to stop executing the command. The default termination shortcut key is <Ctrl+C>.
+For the setting of the shortcut key to terminate the currently executing task, see "Logging In to the Device" in "Basic Configuration Commands".
+Delay seconds: Specifies the interval at which the history command is executed repeatedly. The value ranges from 0 to 4294967295, in seconds. The default value is 1.
+When the history command is executed repeatedly, the system will execute in the order in which the history commands are issued.
+For example, if the user executes the commands a, b, and c in sequence, and then executes the repeat 3 command, the system repeats the commands in the order of a, b, and c.
+If there is an interactive command in the history command repeatedly executed by the user, the user needs to manually process the interactive command until the execution of the interactive command ends, and the history command will continue to be executed repeatedly.
+# Repeat the execution of the last two historical commands, display cpu and display clock, three times. The interval is 10 seconds.
+Escape-key (basic configuration command reference/login device)
+The return command is used to directly return to the user view from the current view (non-user view).
+Any view other than the user view
+The user can also use the key combination <Ctrl+Z> to directly return to the user view from the current view (non-user view), the effect is equivalent to executing the return command.
+# Return to user view from the view of Ten-GigabitEthernet 1/0/1.
+Use the screen-length disable command to disable the split screen display function of the current user.
+Use the undo screen-length disable command to enable the split screen display function of the current user.
+After the user logs in, the screen-length setting under the user line will be followed.
+The default for the screen-length setting is to allow split screen display and the next screen to display 24 lines of data.
+User view
+When the split screen display function is off, all the information will be displayed at one time. If there is more information, the screen will be continuously scanned, which is inconvenient to view immediately.
+This configuration is valid only for the current user's current login. After the user logs in again, the default is restored.
+# Turn off the split screen display function of the current user.
+Screen-length (basic configuration command reference/login device)
+Use the system-view command to enter the system view from the user view.
+# Enter the system view from the user view.
+Default alias
+Field
+description
+The index number
+Alias
+Command string
+Date the command line was executed
+Time to execute the command line
+Login user line used by the user who executed the command
+Login IP used by the user who executed the command
+If the user logs in to the device using the scheme, this field displays the login user name used by the user who executed the command; if you log in to the device using other methods, the field is displayed as **
+Executed commands (consistent with user input)
+Shortcuts for defined binding functions
+Shortcuts for defined binding commands
+Undefined shortcuts
+hot key
+Default bound function or command
+Move_the_cursor_to_the_beginning_of_the_line, which means moving the cursor to the beginning of the current line
+Move_the_cursor_one_character_to_the_left, which means moving the cursor one character to the left
+Stop_the_current_command, means to stop the currently executing function
+Erase_the_character_at_the_cursor, which means to delete the character at the current cursor position
+Move_the_cursor_to_the_end_of_the_line, which means moving the cursor to the end of the current line
+Move_the_cursor_one_character_to_the_right, which means moving the cursor one character to the right
+Display current-configuration, indicating the current configuration
+Erase_the_character_to_the_left_of_the_cursor, which means deleting a character to the left of the cursor
+Abort_the_connection_request, indicating the termination of the outgoing call
+Display ip routing-table, which displays IPv4 routing table information.
+Display_the_next_command_in_the_history_buffer, indicating the next command in the history buffer
+Undo debugging all: Disables debugging of all function items.
+Display_the_previous_command_in_the_history_buffer, indicating the previous command in the display history buffer
+Redisplay_the_current_line, indicating that the current line information is redisplayed
+No command line or function is bound
+Paste_text_from_the_clipboard, indicating the contents of the clipboard
+Delete_the_word_to_the_left_of_the_cursor, which means to delete all characters in the continuous string on the left side of the cursor
+Delete_all_characters_from_the_beginning_of_the_line_to_the_cursor, which means to delete all characters on the left side of the cursor
+Delete_all_characters_from_the_cursor_to_the_end_of_the_line, which means that the cursor position and all characters on its right are deleted.
+return_to_the_User_View, which means returning to the user view
+Kill_incoming_connection_or_redirect_connection, indicating the termination of the current connection
+Move_the_cursor_back_one_word, which means moving the cursor to the first character of the continuous string on the left
+Delete_all_characters_from_the_cursor_to_the_end_of_the_word, which means that all characters in the continuous string of the cursor position and its right side are deleted.
+Move_the_cursor_forward_one_word, which means moving the cursor to the right before the next consecutive string
+Move_the_cursor_down_a_line, which means moving the cursor down one line (valid before inputting carriage return)
+Move_the_cursor_up_a_line, which means moving the cursor up one line (valid before inputting carriage return)
+Move_the_cursor_to_the_beginning_of_the_clipboard, indicating that the cursor position is specified as the start position of the clipboard
+Move_the_cursor_to_the_end_of_the_clipboard, indicating that the cursor position is specified as the end position of the clipboard
